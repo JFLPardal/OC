@@ -17,6 +17,8 @@ class OC_API AInteractableActor : public AActor
 public:	
 	AInteractableActor();
 	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable)
+	virtual void AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 protected:
 	// Called when the game starts or when spawned

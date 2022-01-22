@@ -34,3 +34,17 @@ void AInteractableActor::Tick(float DeltaTime)
 
 }
 
+void AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+{
+	if(otherInteractable)
+	{
+		if(otherInteractable->InteractableType == EInteractableType::Plate)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
+		}
+	}
+}
