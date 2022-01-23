@@ -20,6 +20,17 @@ AInteractableActor::AInteractableActor()
 	}
 }
 
+EInteractableInteractionOutcome AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+{
+	UE_LOG(LogTemp, Error, TEXT("This function should not be called! override 'AttemptInteractionWith'"));
+	return EInteractableInteractionOutcome::NoInteraction;
+}
+
+EInteractableType AInteractableActor::GetInteractableType() const
+{
+	return InteractableType;
+}
+
 // Called when the game starts or when spawned
 void AInteractableActor::BeginPlay()
 {
@@ -32,19 +43,4 @@ void AInteractableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
-{
-	if(otherInteractable)
-	{
-		if(otherInteractable->InteractableType == EInteractableType::Plate)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
-		}
-	}
 }

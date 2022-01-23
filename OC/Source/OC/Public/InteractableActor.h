@@ -9,6 +9,16 @@
 
 class UStaticMeshComponent;
 
+/**
+ *
+ */
+UENUM(BlueprintType)
+enum class EInteractableInteractionOutcome : uint8
+{
+	NoInteraction UMETA(DisplayName="NoInteraction"),
+	ShouldDetachFromCharacter UMETA(DisplayName="ShouldDetachFromCharacter"),
+};
+
 UCLASS()
 class OC_API AInteractableActor : public AActor
 {
@@ -17,9 +27,11 @@ class OC_API AInteractableActor : public AActor
 public:	
 	AInteractableActor();
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable)
-	virtual void AttemptInteractionWith(AInteractableActor* otherInteractable);
 
+	UFUNCTION(BlueprintCallable)
+	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
+
+	EInteractableType GetInteractableType() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,6 +40,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Setup")
 	UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(EditAnywhere, Category="Interactable")
+	UPROPERTY(VisibleAnywhere, Category="Interactable")
 	EInteractableType InteractableType;
 };
