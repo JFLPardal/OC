@@ -21,6 +21,14 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
 		if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
+
+            FAttachmentTransformRules attachmentRules(
+                EAttachmentRule::SnapToTarget,
+                EAttachmentRule::KeepRelative,
+                EAttachmentRule::KeepWorld, 
+                false);
+            otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
+
             interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
 		}
 		else
