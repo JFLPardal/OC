@@ -2,6 +2,7 @@
 
 
 #include "DeliveryConveyorActor.h"
+#include "TimerManager.h"
 
 ADeliveryConveyorActor::ADeliveryConveyorActor()
     :AInteractableActor()
@@ -11,6 +12,11 @@ ADeliveryConveyorActor::ADeliveryConveyorActor()
     PlateSocket = CreateDefaultSubobject<USceneComponent>(TEXT("PlateSocket"));
     PlateSocket->SetupAttachment(RootComponent);
     PlateSocket->SetRelativeLocation(FVector(.0f, .0f, 70.0f));
+}
+
+void ADeliveryConveyorActor::HideAndRespawnPlate()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Timer expired!"));
 }
 
 EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
@@ -30,6 +36,8 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
             otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
 
             interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+            
+            GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
 		}
 		else
 		{

@@ -22,6 +22,7 @@ AInteractableActor::AInteractableActor()
 
 EInteractableInteractionOutcome AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
+	checkfSlow(false, TEXT("%s is not overriding AInteractableActor::AttemptInteractionWith"), *GetActorLabel());
 	UE_LOG(LogTemp, Error, TEXT("This function should not be called! override 'AttemptInteractionWith'"));
 	return EInteractableInteractionOutcome::NoInteraction;
 }

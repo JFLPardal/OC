@@ -20,6 +20,15 @@ public:
 	// pure virtual from parent class
 	EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 protected:
+	UFUNCTION()
+	void HideAndRespawnPlate();
+
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* PlateSocket;
+
+	UPROPERTY(EditAnywhere, Category="Setup")
+	float SecondsBeforePlateRespawn = 1.5f;
+private:
+	FTimerHandle hideAndRespawnPlate;
 };
