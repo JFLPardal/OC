@@ -10,13 +10,24 @@ ADeliveryConveyorActor::ADeliveryConveyorActor()
     InteractableType = EInteractableType::DeliveryConveyor;
 
     PlateSocket = CreateDefaultSubobject<USceneComponent>(TEXT("PlateSocket"));
+    checkfSlow(PlateSocket, TEXT("PlateSocket not created for %s"), *GetActorLabel());
     PlateSocket->SetupAttachment(RootComponent);
     PlateSocket->SetRelativeLocation(FVector(.0f, .0f, 70.0f));
 }
 
 void ADeliveryConveyorActor::HideAndRespawnPlate()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Timer expired!"));
+    if(HeldPlate && PlateRespawnLocation)
+    {
+        HeldPlate->SetActorLocation(PlateRespawnLocation->GetActorLocation());
+        FDetachmentTransformRules dettachmentRules(
+                EDetachmentRule::KeepWorld,
+                EDetachmentRule::KeepRelative,
+                EDetachmentRule::KeepWorld, 
+                false);
+        HeldPlate->DetachFromActor(dettachmentRules);
+        HeldPlate = nullptr;
+    }
 }
 
 EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
@@ -34,9 +45,8 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
                 EAttachmentRule::KeepWorld, 
                 false);
             otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
-
+            HeldPlate = otherInteractable;
             interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
-            
             GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
 		}
 		else

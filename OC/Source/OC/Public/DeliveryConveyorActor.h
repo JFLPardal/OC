@@ -28,7 +28,11 @@ protected:
 	USceneComponent* PlateSocket;
 
 	UPROPERTY(EditAnywhere, Category="Setup")
+	AActor* PlateRespawnLocation;
+
+	UPROPERTY(EditAnywhere, Category="Setup")
 	float SecondsBeforePlateRespawn = 1.5f;
 private:
 	FTimerHandle hideAndRespawnPlate;
+	AInteractableActor* HeldPlate;
 };
