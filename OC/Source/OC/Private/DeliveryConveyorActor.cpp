@@ -17,16 +17,19 @@ ADeliveryConveyorActor::ADeliveryConveyorActor()
 
 void ADeliveryConveyorActor::HideAndRespawnPlate()
 {
-    if(HeldPlate && PlateRespawnLocation)
+    if(HeldPlate)
     {
-        HeldPlate->SetActorLocation(PlateRespawnLocation->GetActorLocation());
-        FDetachmentTransformRules dettachmentRules(
-                EDetachmentRule::KeepWorld,
-                EDetachmentRule::KeepRelative,
-                EDetachmentRule::KeepWorld, 
-                false);
-        HeldPlate->DetachFromActor(dettachmentRules);
-        HeldPlate = nullptr;
+        if(ensureMsgf(PlateRespawnLocation, TEXT("PlateRespawnLocation not set for %s"), *GetActorLabel()))
+        {
+            FDetachmentTransformRules dettachmentRules(
+                    EDetachmentRule::KeepWorld,
+                    EDetachmentRule::KeepRelative,
+                    EDetachmentRule::KeepWorld, 
+                    false);
+            HeldPlate->SetActorLocation(PlateRespawnLocation->GetActorLocation());
+            HeldPlate->DetachFromActor(dettachmentRules);
+            HeldPlate = nullptr;
+        }
     }
 }
 
