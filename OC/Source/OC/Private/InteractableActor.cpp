@@ -9,7 +9,7 @@ AInteractableActor::AInteractableActor()
 	:InteractableType(EInteractableType::Unspecified)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = BaseMesh;
 	
@@ -23,7 +23,7 @@ AInteractableActor::AInteractableActor()
 EInteractableInteractionOutcome AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
 	checkfSlow(false, TEXT("%s is not overriding AInteractableActor::AttemptInteractionWith"), *GetActorLabel());
-	UE_LOG(LogTemp, Error, TEXT("This function should not be called! override 'AttemptInteractionWith'"));
+	UE_LOG(LogTemp, Error, TEXT("This function should not be called! override 'AttemptInteractionWith' for actor %s"), *GetActorLabel());
 	return EInteractableInteractionOutcome::NoInteraction;
 }
 
