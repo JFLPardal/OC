@@ -7,10 +7,8 @@
 AIngredient::AIngredient()
     :AInteractableActor()
 {
-	InteractableType = EInteractableType::Plate;
+	InteractableType = EInteractableType::Ingredient;
 	Ingredient = EIngredient::Tomato;
-
-	SetActorScale3D(FVector(.3f));
 }
 
 EInteractableInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)

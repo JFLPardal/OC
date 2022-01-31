@@ -7,6 +7,9 @@ APlate::APlate()
     :AInteractableActor()
 {
     InteractableType = EInteractableType::Plate;
+
+    IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
+    HeldIngredient = nullptr;
 }
 
 EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
@@ -16,6 +19,18 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
     if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
     {
         UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
+        FAttachmentTransformRules attachmentRules(
+                EAttachmentRule::SnapToTarget,
+                EAttachmentRule::KeepRelative,
+                EAttachmentRule::KeepWorld, 
+                false);
+        otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
+        HeldIngredient = otherInteractable;
+        auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
+        if(MeshComponent)
+        {
+            MeshComponent->SetGenerateOverlapEvents(false);
+        }
     }
     else
     {

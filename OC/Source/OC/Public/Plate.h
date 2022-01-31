@@ -17,4 +17,9 @@ public:
 	APlate();
 protected:
 	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+private:
+	UPROPERTY(EditAnywhere)
+	USceneComponent* IngredientSocket;
+	
+	AInteractableActor* HeldIngredient;
 };
