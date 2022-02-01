@@ -2,6 +2,8 @@
 
 
 #include "DeliveryConveyorActor.h"
+
+#include "Plate.h"
 #include "TimerManager.h"
 
 ADeliveryConveyorActor::ADeliveryConveyorActor()
@@ -26,6 +28,7 @@ void ADeliveryConveyorActor::HideAndRespawnPlate()
                     EDetachmentRule::KeepRelative,
                     EDetachmentRule::KeepWorld, 
                     false);
+            HeldPlate->ClearPlate();
             HeldPlate->SetActorLocation(PlateRespawnLocation->GetActorLocation());
             HeldPlate->DetachFromActor(dettachmentRules);
             HeldPlate = nullptr;
@@ -40,15 +43,15 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
 	{
 		if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
+            UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
 
-            FAttachmentTransformRules attachmentRules(
-                EAttachmentRule::SnapToTarget,
-                EAttachmentRule::KeepRelative,
-                EAttachmentRule::KeepWorld, 
-                false);
+            FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
             otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
-            HeldPlate = otherInteractable;
+            HeldPlate = Cast<APlate>(otherInteractable);
+            if(!HeldPlate)
+            {
+                UE_LOG(LogTemp, Error, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel());
+            }
             interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
             GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
 		}

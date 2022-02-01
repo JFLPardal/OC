@@ -26,6 +26,7 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
                 false);
         otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
         HeldIngredient = otherInteractable;
+        interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
         auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
         if(MeshComponent)
         {
@@ -39,3 +40,11 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
     return interactionOutcome;
 }
 
+void APlate::ClearPlate()
+{
+    FDetachmentTransformRules dettachmentRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative,EDetachmentRule::KeepWorld, false);
+    HeldIngredient->DetachFromActor(dettachmentRules);
+
+    IngredientSocket = nullptr;
+    HeldIngredient = nullptr;
+}

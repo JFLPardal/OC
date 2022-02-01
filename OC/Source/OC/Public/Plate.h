@@ -15,8 +15,11 @@ class OC_API APlate : public AInteractableActor
 	GENERATED_BODY()
 public:
 	APlate();
+	
+	void ClearPlate();
 protected:
 	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* IngredientSocket;

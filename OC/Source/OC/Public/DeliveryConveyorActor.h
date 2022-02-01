@@ -6,7 +6,7 @@
 #include "InteractableActor.h"
 #include "DeliveryConveyorActor.generated.h"
 
-
+class APlate;
 /**
  * 
  */
@@ -34,5 +34,5 @@ protected:
 	float SecondsBeforePlateRespawn = 1.5f;
 private:
 	FTimerHandle hideAndRespawnPlate;
-	AInteractableActor* HeldPlate;
+	APlate* HeldPlate;
 };
