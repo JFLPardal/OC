@@ -14,5 +14,24 @@ AIngredient::AIngredient()
 EInteractableInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s interacting with Ingredient"), *GetActorLabel());
-	return EInteractableInteractionOutcome::NoInteraction;
+	const bool characterIsHoldingSomething = otherInteractable != nullptr;
+    auto interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+
+    if(characterIsHoldingSomething)
+    {
+        if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("character is holding a plate and trying to interact with ingredient -> add ingredient to plate"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Plate interaction with something with no interaction defined"));
+        }
+    }
+    else
+    {
+        interactionOutcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
+    }
+
+	return interactionOutcome;
 }

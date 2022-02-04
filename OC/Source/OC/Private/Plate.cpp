@@ -15,28 +15,37 @@ APlate::APlate()
 EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
     auto interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+    const bool characterIsHoldingSomething = otherInteractable != nullptr;
 
-    if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
+    if(characterIsHoldingSomething)
     {
-        UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
-        FAttachmentTransformRules attachmentRules(
-                EAttachmentRule::SnapToTarget,
-                EAttachmentRule::KeepRelative,
-                EAttachmentRule::KeepWorld, 
-                false);
-        otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
-        HeldIngredient = otherInteractable;
-        interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
-        auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
-        if(MeshComponent)
+        if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
         {
-            MeshComponent->SetGenerateOverlapEvents(false);
+            UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
+            FAttachmentTransformRules attachmentRules(
+                    EAttachmentRule::SnapToTarget,
+                    EAttachmentRule::KeepRelative,
+                    EAttachmentRule::KeepWorld, 
+                    false);
+            otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
+            HeldIngredient = otherInteractable;
+            interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+            auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
+            if(MeshComponent)
+            {
+                MeshComponent->SetGenerateOverlapEvents(false);
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Plate interaction with something with no interaction defined"));
         }
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("Plate interaction with something with no interaction defined"));
+        interactionOutcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
+
     return interactionOutcome;
 }
 

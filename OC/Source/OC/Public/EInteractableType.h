@@ -10,9 +10,11 @@
 UENUM(BlueprintType)
 enum class EInteractableType : uint8
 {
-	Plate 				UMETA(DisplayName="Plate"),
-	DeliveryConveyor 	UMETA(DisplayName="DeliveryConveyor"),
-	Ingredient			UMETA(DisplayName="Ingredient"),
-	Unspecified 		UMETA(DisplayName="Unspecified"),
-	Invalid 			UMETA(DisplayName="INVALID"),
+	Plate 						UMETA(DisplayName="Plate"),
+	DeliveryConveyor 			UMETA(DisplayName="DeliveryConveyor"),
+	Ingredient					UMETA(DisplayName="Ingredient"),
+	IngredientSpawnerCrate 		UMETA(DisplayName="IngredientSpawnerCrate"),
+	Unspecified 				UMETA(DisplayName="Unspecified"),
+	Invalid 					UMETA(DisplayName="INVALID"),
+
 };

@@ -15,8 +15,9 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class EInteractableInteractionOutcome : uint8
 {
-	NoInteraction UMETA(DisplayName="NoInteraction"),
-	ShouldDetachFromCharacter UMETA(DisplayName="ShouldDetachFromCharacter"),
+	NoInteraction 				UMETA(DisplayName="NoInteraction"),
+	ShouldDetachFromCharacter 	UMETA(DisplayName="ShouldDetachFromCharacter"),
+	ShouldAttachToCharacter 	UMETA(DisplayName="ShouldAttachToCharacter"),
 };
 
 UCLASS()

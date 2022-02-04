@@ -39,10 +39,12 @@ void ADeliveryConveyorActor::HideAndRespawnPlate()
 EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
     EInteractableInteractionOutcome interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
-    if(otherInteractable)
-	{
-		if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
-		{
+    const bool characterIsHoldingSomething = otherInteractable != nullptr;
+
+    if(characterIsHoldingSomething)
+    {
+        if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
+        {
             UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
 
             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
@@ -54,12 +56,13 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
             }
             interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
             GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
             interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
-		}
-	}
+        }
+    }
+
     return interactionOutcome;
 }
