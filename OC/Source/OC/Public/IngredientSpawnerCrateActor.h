@@ -6,6 +6,8 @@
 #include "InteractableActor.h"
 #include "IngredientSpawnerCrateActor.generated.h"
 
+class AIngredient;
+
 /**
  * 
  */
@@ -21,4 +23,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* IngredientSocket;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess="true"))
+	TSubclassOf<AIngredient> IngredientActorToSpawn;
 };

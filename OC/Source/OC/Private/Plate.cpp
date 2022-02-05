@@ -51,9 +51,12 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
 
 void APlate::ClearPlate()
 {
-    FDetachmentTransformRules dettachmentRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative,EDetachmentRule::KeepWorld, false);
-    HeldIngredient->DetachFromActor(dettachmentRules);
+    if(HeldIngredient)
+    {
+        FDetachmentTransformRules dettachmentRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative,EDetachmentRule::KeepWorld, false);
+        HeldIngredient->DetachFromActor(dettachmentRules);
+        HeldIngredient = nullptr;
+    }
 
     IngredientSocket = nullptr;
-    HeldIngredient = nullptr;
 }

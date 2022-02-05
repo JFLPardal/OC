@@ -3,6 +3,8 @@
 
 #include "IngredientSpawnerCrateActor.h"
 
+#include "Ingredient.h"
+
 AIngredientSpawnerCrateActor::AIngredientSpawnerCrateActor()
     :AInteractableActor()
 {
@@ -17,6 +19,7 @@ EInteractableInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteraction
     if(!otherInteractable)
     {
         UE_LOG(LogTemp, Warning, TEXT("spawn ingredient"));
+        GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
     }
     else
     {
