@@ -18,7 +18,7 @@ public:
 	ADeliveryConveyorActor();
 	
 	// pure virtual from parent class
-	EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+	FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 protected:
 	UFUNCTION()
 	void HideAndRespawnPlate();

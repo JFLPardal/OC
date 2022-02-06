@@ -36,9 +36,9 @@ void ADeliveryConveyorActor::HideAndRespawnPlate()
     }
 }
 
-EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-    EInteractableInteractionOutcome interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
     const bool characterIsHoldingSomething = otherInteractable != nullptr;
 
     if(characterIsHoldingSomething)
@@ -54,13 +54,13 @@ EInteractableInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(A
             {
                 UE_LOG(LogTemp, Error, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel());
             }
-            interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+            interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
             GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
         }
         else
         {
             UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
-            interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+            interactionOutcome.Outcome = EInteractableInteractionOutcome::NoInteraction;
         }
     }
 

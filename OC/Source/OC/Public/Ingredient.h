@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AIngredient();
 protected:
-	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:
 	UPROPERTY(EditAnywhere)
 	EIngredient Ingredient;

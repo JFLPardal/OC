@@ -19,11 +19,13 @@ class OC_API AIngredientSpawnerCrateActor : public AInteractableActor
 public:
 	AIngredientSpawnerCrateActor();
 
-	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* IngredientSocket;
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess="true"))
 	TSubclassOf<AIngredient> IngredientActorToSpawn;
+
+	AIngredient* SpawnedIngredient;
 };

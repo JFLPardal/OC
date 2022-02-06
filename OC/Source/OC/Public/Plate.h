@@ -18,7 +18,7 @@ public:
 	
 	void ClearPlate();
 protected:
-	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 
 private:
 	UPROPERTY(EditAnywhere)

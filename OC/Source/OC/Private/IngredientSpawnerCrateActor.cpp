@@ -6,20 +6,37 @@
 #include "Ingredient.h"
 
 AIngredientSpawnerCrateActor::AIngredientSpawnerCrateActor()
-    :AInteractableActor()
+    : AInteractableActor()
+    , SpawnedIngredient(nullptr)
 {
     InteractableType = EInteractableType::IngredientSpawnerCrate;
 
     IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
+    FVector SocketOffset{ 0.f, 0.f, 120.f };
+    IngredientSocket->SetRelativeLocation(SocketOffset);
 }
 
-EInteractableInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-    auto interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
     if(!otherInteractable)
     {
-        UE_LOG(LogTemp, Warning, TEXT("spawn ingredient"));
-        GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
+        const bool HasIngredientOnTop = SpawnedIngredient != nullptr;
+        if(!HasIngredientOnTop)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("spawn ingredient"));
+
+            SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("attach ingredient to chracter"));
+
+            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
+            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
+
+            SpawnedIngredient = nullptr;
+        }
     }
     else
     {

@@ -11,14 +11,14 @@ AIngredient::AIngredient()
 	Ingredient = EIngredient::Tomato;
 }
 
-EInteractableInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
+FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s interacting with Ingredient"), *GetActorLabel());
 	const bool characterIsHoldingSomething = otherInteractable != nullptr;
-    auto interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
 
     if(characterIsHoldingSomething)
     {
+	    UE_LOG(LogTemp, Warning, TEXT("%s interacting with Ingredient"), *(otherInteractable->GetActorLabel()));
         if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
         {
             UE_LOG(LogTemp, Warning, TEXT("character is holding a plate and trying to interact with ingredient -> add ingredient to plate"));
@@ -30,7 +30,7 @@ EInteractableInteractionOutcome AIngredient::AttemptInteractionWith(AInteractabl
     }
     else
     {
-        interactionOutcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
+        interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
 
 	return interactionOutcome;

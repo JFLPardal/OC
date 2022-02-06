@@ -12,9 +12,9 @@ APlate::APlate()
     HeldIngredient = nullptr;
 }
 
-EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
+FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-    auto interactionOutcome = EInteractableInteractionOutcome::NoInteraction;
+    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
     const bool characterIsHoldingSomething = otherInteractable != nullptr;
 
     if(characterIsHoldingSomething)
@@ -22,19 +22,19 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
         if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
         {
             UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
-            FAttachmentTransformRules attachmentRules(
-                    EAttachmentRule::SnapToTarget,
-                    EAttachmentRule::KeepRelative,
-                    EAttachmentRule::KeepWorld, 
-                    false);
+            
+            FAttachmentTransformRules attachmentRules( EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
             otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
+            
             HeldIngredient = otherInteractable;
-            interactionOutcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+
             auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
             if(MeshComponent)
             {
                 MeshComponent->SetGenerateOverlapEvents(false);
             }
+            
+            interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
         }
         else
         {
@@ -43,7 +43,7 @@ EInteractableInteractionOutcome APlate::AttemptInteractionWith(AInteractableActo
     }
     else
     {
-        interactionOutcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
+        interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
 
     return interactionOutcome;

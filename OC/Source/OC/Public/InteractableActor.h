@@ -15,9 +15,25 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class EInteractableInteractionOutcome : uint8
 {
-	NoInteraction 				UMETA(DisplayName="NoInteraction"),
-	ShouldDetachFromCharacter 	UMETA(DisplayName="ShouldDetachFromCharacter"),
-	ShouldAttachToCharacter 	UMETA(DisplayName="ShouldAttachToCharacter"),
+	NoInteraction 					UMETA(DisplayName="NoInteraction"),
+	ShouldDetachFromCharacter 		UMETA(DisplayName="ShouldDetachFromCharacter"),
+	ShouldAttachToCharacter 		UMETA(DisplayName="ShouldAttachToCharacter"),
+	InteractWithOtherInteractable	UMETA(DisplayName="InteractWithOtherInteractable"),
+};
+
+USTRUCT(BlueprintType)
+struct FInteractionOutcome
+{
+	GENERATED_BODY() 
+
+	FInteractionOutcome();
+	explicit FInteractionOutcome(EInteractableInteractionOutcome outcome, AInteractableActor* newActorToInteractWith = nullptr);
+
+
+	UPROPERTY(BlueprintReadWrite)
+	EInteractableInteractionOutcome Outcome;
+	UPROPERTY(BlueprintReadWrite)
+	AInteractableActor* NewActorToInteractWith;
 };
 
 UCLASS()
@@ -28,9 +44,9 @@ class OC_API AInteractableActor : public AActor
 public:	
 	AInteractableActor();
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UFUNCTION(BlueprintCallable)
-	virtual EInteractableInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
+	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 	EInteractableType GetInteractableType() const;
 protected:

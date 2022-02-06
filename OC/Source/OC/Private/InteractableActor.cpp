@@ -20,11 +20,11 @@ AInteractableActor::AInteractableActor()
 	}
 }
 
-EInteractableInteractionOutcome AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+FInteractionOutcome AInteractableActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
 	checkfSlow(false, TEXT("%s is not overriding AInteractableActor::AttemptInteractionWith"), *GetActorLabel());
 	UE_LOG(LogTemp, Error, TEXT("This function should not be called! override 'AttemptInteractionWith' for actor %s"), *GetActorLabel());
-	return EInteractableInteractionOutcome::NoInteraction;
+	return FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
 }
 
 EInteractableType AInteractableActor::GetInteractableType() const
@@ -44,4 +44,15 @@ void AInteractableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+FInteractionOutcome::FInteractionOutcome()
+	:FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction)
+{
+}
+
+FInteractionOutcome::FInteractionOutcome(EInteractableInteractionOutcome outcome, AInteractableActor* newActorToInteractWith)
+{
+	Outcome = outcome;
+	NewActorToInteractWith = newActorToInteractWith;
 }
