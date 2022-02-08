@@ -41,6 +41,13 @@ FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AIntera
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("Interacting with AIngredientSpawnerCrateActor while holding an interactable"));
+        if(SpawnedIngredient && otherInteractable->GetInteractableType() ==  EInteractableType::Plate)
+        {
+            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
+            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
+
+            SpawnedIngredient = nullptr;
+        }
     }
     return interactionOutcome;
 }

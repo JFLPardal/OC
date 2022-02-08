@@ -23,11 +23,11 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
         {
             UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
             
-            FAttachmentTransformRules attachmentRules( EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
-            otherInteractable->AttachToComponent(IngredientSocket, attachmentRules);
-            
             HeldIngredient = otherInteractable;
 
+            FAttachmentTransformRules attachmentRules( EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
+            HeldIngredient->AttachToComponent(IngredientSocket, attachmentRules);
+            
             auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
             if(MeshComponent)
             {
@@ -53,10 +53,7 @@ void APlate::ClearPlate()
 {
     if(HeldIngredient)
     {
-        FDetachmentTransformRules dettachmentRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative,EDetachmentRule::KeepWorld, false);
-        HeldIngredient->DetachFromActor(dettachmentRules);
+        HeldIngredient->Destroy();
         HeldIngredient = nullptr;
     }
-
-    IngredientSocket = nullptr;
 }
