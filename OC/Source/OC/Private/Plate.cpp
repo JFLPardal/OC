@@ -23,14 +23,14 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
         {
             UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
             
+            BaseMesh->SetSimulatePhysics(false);
             HeldIngredient = otherInteractable;
-
-            FAttachmentTransformRules attachmentRules( EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
-            HeldIngredient->AttachToComponent(IngredientSocket, attachmentRules);
             
             auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
             if(MeshComponent)
             {
+                FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
+                HeldIngredient->GetRootComponent()->AttachToComponent(IngredientSocket, attachmentRules);
                 MeshComponent->SetGenerateOverlapEvents(false);
             }
             
@@ -43,6 +43,7 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
     }
     else
     {
+        BaseMesh->SetSimulatePhysics(false);
         interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
 
@@ -55,5 +56,6 @@ void APlate::ClearPlate()
     {
         HeldIngredient->Destroy();
         HeldIngredient = nullptr;
+        BaseMesh->SetSimulatePhysics(true);
     }
 }
