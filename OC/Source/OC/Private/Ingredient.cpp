@@ -22,7 +22,6 @@ FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* othe
         if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
         {
             UE_LOG(LogTemp, Warning, TEXT("character is holding a plate and trying to interact with ingredient -> add ingredient to plate"));
-            BaseMesh->SetSimulatePhysics(false);
         }
         else
         {
@@ -31,7 +30,6 @@ FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* othe
     }
     else
     {
-        BaseMesh->SetSimulatePhysics(false);
         interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
 

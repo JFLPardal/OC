@@ -23,7 +23,6 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
         {
             UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
             
-            BaseMesh->SetSimulatePhysics(false);
             HeldIngredient = otherInteractable;
             
             auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
@@ -43,7 +42,6 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
     }
     else
     {
-        BaseMesh->SetSimulatePhysics(false);
         interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldAttachToCharacter;
     }
 
@@ -56,6 +54,5 @@ void APlate::ClearPlate()
     {
         HeldIngredient->Destroy();
         HeldIngredient = nullptr;
-        BaseMesh->SetSimulatePhysics(true);
     }
 }

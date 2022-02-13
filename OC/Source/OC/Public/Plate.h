@@ -19,7 +19,6 @@ public:
 	void ClearPlate();
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
-
 private:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* IngredientSocket;
