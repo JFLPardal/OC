@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "OCEditor Editor Win64 Development (OC)",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "C:\\Users\\Joao\\Desktop\\UEToDelete\\OC\\.vscode\\compileCommands_OC.json",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        },
+        {
+            "name": "Win32",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "C:\\Users\\Joao\\Desktop\\UEToDelete\\OC\\.vscode\\compileCommands_Default.json",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "includePath": [
+                "${workspaceFolder}",
+                "C:\\Program Files (x86)\\Epic Games\\UE_4.27\\Engine\\**",
+                "${workspaceFolder}\\Source\\OC\\Public\\**"
+            ]
+        }
+    ],
+    "version": 4
+}
+// remove backup from name and paste under OC\.vscode

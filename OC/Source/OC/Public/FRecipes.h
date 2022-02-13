@@ -17,11 +17,11 @@ struct FRecipes : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EIngredient Ingredient_1;
+	EIngredient FirstIngredient;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EIngredient Ingredient_2;
+	EIngredient SecondIngredient;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EIngredient Ingredient_3;
+	EIngredient ThirdIngredient;
 };
