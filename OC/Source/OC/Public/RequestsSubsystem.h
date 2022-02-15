@@ -24,4 +24,5 @@ private:
 	UDataTable* RecipesDataTable;
 
 	FRecipes* CurrentRecipeData;
+	FString RecipesDataTableAssetLocation;
 };
