@@ -10,6 +10,7 @@
 
 // log 
 #define LOG_WARNING(text) UE_LOG(LogTemp, Warn, TEXT(text))
+#define LOG_ERROR(text) UE_LOG(LogTemp, Error, TEXT(text))
 
 // ensure 
 #define ENSURE_MSG(condition, text) ensureMsgf(condition, TEXT(text))

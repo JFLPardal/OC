@@ -20,9 +20,12 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 private:
+	FRecipes* GetRandomRecipeFromRecipeBook();
+
 	UPROPERTY(VIsibleAnywhere)
 	UDataTable* RecipesDataTable;
 
+	TArray<FRecipes*> RecipeBook;
 	FRecipes* CurrentRecipeData;
 	FString RecipesDataTableAssetLocation;
 };
