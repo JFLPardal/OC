@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Class.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Macros.h"
 #include "FRecipes.h"
@@ -83,6 +84,31 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
         CurrentRecipeData = GetRandomRecipeFromRecipeBook();
         OC::PrintRecipe(*CurrentRecipeData, OC::PrintTo::outputAndScreen);
     }
+     
+    // subscribe to the OnPlateDelivered events
+   {
+        if(UWorld* World = GetWorld())
+        {
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADeliveryConveyorActor::StaticClass(), DeliveryConveyorActors);
+            if(ensureMsgf(DeliveryConveyorActors.Num() > 0, TEXT("No DeliveryConveyorActors found in World, delivered plates will not be checked for correct recipes")))
+            {
+                for(AActor* deliveryConveyorActor : DeliveryConveyorActors )
+                {
+                    Cast<ADeliveryConveyorActor>(deliveryConveyorActor)->OnPlateDelivered.AddDynamic(this, &URequestsSubsystem::CheckIfPlateHasActiveRecipe);
+                    DTOS("subscribed to CheckIfPlateHasActiveRecipe")
+                }
+            }
+        }
+        else
+        {
+            DTOS("URequestsSubsystem::URequestsSubsystem - World not found")
+        }
+    }
+}
+
+void URequestsSubsystem::CheckIfPlateHasActiveRecipe(EIngredient Recipe)
+{
+    DTOS("checking if plate has a matching recipe");
 }
 
 FRecipes* URequestsSubsystem::GetRandomRecipeFromRecipeBook()

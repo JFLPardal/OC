@@ -45,6 +45,10 @@ FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractable
     {
         if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
         {
+            if(OnPlateDelivered.IsBound())
+            {
+                OnPlateDelivered.Broadcast(EIngredient::Beans);
+            }
             UE_LOG(LogTemp, Warning, TEXT("Interacting with Plate"));
 
             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);

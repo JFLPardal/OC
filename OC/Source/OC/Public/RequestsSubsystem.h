@@ -4,6 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+
+#include "DeliveryConveyorActor.h"
+// remove after CheckIfPlateHasActiveRecipe is updated to use Recipes
+#include "EIngredient.h"
+
 #include "RequestsSubsystem.generated.h"
 
 class UDataTable;
@@ -19,6 +24,9 @@ public:
 	URequestsSubsystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	UFUNCTION()
+	void CheckIfPlateHasActiveRecipe(EIngredient Recipe);
 private:
 	FRecipes* GetRandomRecipeFromRecipeBook();
 
@@ -28,4 +36,6 @@ private:
 	TArray<FRecipes*> RecipeBook;
 	FRecipes* CurrentRecipeData;
 	FString RecipesDataTableAssetLocation;
+
+	TArray<AActor*> DeliveryConveyorActors;
 };
