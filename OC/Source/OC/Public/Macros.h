@@ -9,7 +9,7 @@
 #define DTOSC(text, color) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 3.0f, color, TEXT(text)); }
 
 // log 
-#define LOG_WARNING(text) UE_LOG(LogTemp, Warn, TEXT(text))
+#define LOG_WARNING(text) UE_LOG(LogTemp, Warning, TEXT(text))
 #define LOG_ERROR(text) UE_LOG(LogTemp, Error, TEXT(text))
 
 // ensure 

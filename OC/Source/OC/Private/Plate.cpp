@@ -2,6 +2,8 @@
 
 
 #include "Plate.h"
+#include "RecipeData.h"
+#include "Macros.h"  // delete this after test
 
 APlate::APlate()
     :AInteractableActor()
@@ -10,6 +12,11 @@ APlate::APlate()
 
     IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
     HeldIngredient = nullptr;
+
+    FRecipeData recipe{};
+    FString d = recipe.RecipeIngredients.ToString();
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *d);
+
 }
 
 FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
