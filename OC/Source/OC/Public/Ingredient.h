@@ -16,6 +16,8 @@ class OC_API AIngredient : public AInteractableActor
 public:	
 	// Sets default values for this actor's properties
 	AIngredient();
+
+	EIngredient GetIngredient() const;
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:

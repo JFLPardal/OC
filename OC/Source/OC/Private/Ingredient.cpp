@@ -10,6 +10,10 @@ AIngredient::AIngredient()
 	InteractableType = EInteractableType::Ingredient;
 	Ingredient = EIngredient::Tomato;
 }
+EIngredient AIngredient::GetIngredient() const
+{
+    return Ingredient;
+}
 
 FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {

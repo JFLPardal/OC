@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Containers/StaticBitArray.h"
+#include "EIngredient.h"
 #include "RecipeData.generated.h"
 /**
  * 
@@ -15,6 +16,9 @@ struct FRecipeData
 public:
 	FRecipeData();
 	~FRecipeData();
+
+	bool CanAddIngrendient(EIngredient IngredientToAdd) const;
+	void AddIngredient(EIngredient IngredientToAdd);
 //private:
 	TStaticBitArray<16> RecipeIngredients;
 };

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "InteractableActor.h"
+#include "RecipeData.h"
+
 #include "Plate.generated.h"
 
 /**
@@ -24,4 +26,5 @@ private:
 	USceneComponent* IngredientSocket;
 	
 	AInteractableActor* HeldIngredient;
+	FRecipeData CurrentRecipeData;
 };

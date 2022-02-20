@@ -2,21 +2,17 @@
 
 
 #include "Plate.h"
-#include "RecipeData.h"
 #include "Macros.h"  // delete this after test
+#include "Ingredient.h"
 
 APlate::APlate()
-    :AInteractableActor()
+    : AInteractableActor()
+    , CurrentRecipeData()
 {
     InteractableType = EInteractableType::Plate;
 
     IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
     HeldIngredient = nullptr;
-
-    FRecipeData recipe{};
-    FString d = recipe.RecipeIngredients.ToString();
-    UE_LOG(LogTemp, Warning, TEXT("%s"), *d);
-
 }
 
 FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
@@ -28,19 +24,22 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
     {
         if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
         {
-            UE_LOG(LogTemp, Warning, TEXT("%s is trying to interact with plate"), *(otherInteractable->GetActorLabel()));
-            
-            HeldIngredient = otherInteractable;
-            
-            auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
-            if(MeshComponent)
+            const auto Ingredient = Cast<AIngredient>(otherInteractable)->GetIngredient();
+            if(CurrentRecipeData.CanAddIngrendient(Ingredient))
             {
-                FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
-                HeldIngredient->GetRootComponent()->AttachToComponent(IngredientSocket, attachmentRules);
-                MeshComponent->SetGenerateOverlapEvents(false);
+                CurrentRecipeData.AddIngredient(Ingredient);
+                HeldIngredient = otherInteractable;
+
+                auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
+                if(MeshComponent)
+                {
+                    FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
+                    HeldIngredient->GetRootComponent()->AttachToComponent(IngredientSocket, attachmentRules);
+                    MeshComponent->SetGenerateOverlapEvents(false);
+                }
+                
+                interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
             }
-            
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
         }
         else
         {
