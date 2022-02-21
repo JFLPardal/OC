@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "InteractableActor.h"
-#include "EIngredient.h"
 #include "DeliveryConveyorActor.generated.h"
 
-//UDELEGATE(BlueprintCallable)
-//DECLARE_DELEGATE_OneParam(FOnPlateDelivered, FRecipes*, Recipe)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlateDelivered, EIngredient, Recipe); // test as some work will be needed to get the recipe from the plate
-
 class APlate;
+
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlateDelivered, APlate*, Plate);
+
 /**
  * 
  */
@@ -22,7 +21,9 @@ class OC_API ADeliveryConveyorActor : public AInteractableActor
 public:
 	ADeliveryConveyorActor();
 	
+	UPROPERTY(BlueprintAssignable, Category="Events")
 	FPlateDelivered OnPlateDelivered;
+	
 	// pure virtual from parent class
 	FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 protected:

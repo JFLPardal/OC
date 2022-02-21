@@ -6,13 +6,13 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 
 #include "DeliveryConveyorActor.h"
-// remove after CheckIfPlateHasActiveRecipe is updated to use Recipes
-#include "EIngredient.h"
 
 #include "RequestsSubsystem.generated.h"
 
+class APlate;
 class UDataTable;
 struct FRecipes;
+
 /**
  * Subsystem responsible for storing and all the logic related with Requests
  */
@@ -26,7 +26,7 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	UFUNCTION()
-	void CheckIfPlateHasActiveRecipe(EIngredient Recipe);
+	void CheckIfPlateHasActiveRecipe(APlate* Plate);
 private:
 	FRecipes* GetRandomRecipeFromRecipeBook();
 

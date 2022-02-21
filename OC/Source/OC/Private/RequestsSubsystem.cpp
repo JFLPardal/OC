@@ -10,6 +10,7 @@
 
 #include "Macros.h"
 #include "FRecipes.h"
+#include "Plate.h"
 
 URequestsSubsystem::URequestsSubsystem()
 {
@@ -106,9 +107,14 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     }
 }
 
-void URequestsSubsystem::CheckIfPlateHasActiveRecipe(EIngredient Recipe)
+void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
 {
     DTOS("checking if plate has a matching recipe");
+    if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
+    {
+        FString PlateRecipe = Plate->GetRecipeData().RecipeIngredients.ToString();
+        UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
+    }
 }
 
 FRecipes* URequestsSubsystem::GetRandomRecipeFromRecipeBook()

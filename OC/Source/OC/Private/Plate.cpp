@@ -54,6 +54,11 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
     return interactionOutcome;
 }
 
+const FRecipeData& APlate::GetRecipeData() const
+{
+    return CurrentRecipeData;
+}
+
 void APlate::ClearPlate()
 {
     if(HeldIngredient)

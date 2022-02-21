@@ -19,6 +19,7 @@ public:
 	APlate();
 	
 	void ClearPlate();
+	const FRecipeData& GetRecipeData() const;
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:
