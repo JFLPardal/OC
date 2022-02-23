@@ -12,6 +12,7 @@
 class APlate;
 class UDataTable;
 struct FRecipes;
+struct FRecipeData;
 
 /**
  * Subsystem responsible for storing and all the logic related with Requests
@@ -28,13 +29,13 @@ public:
 	UFUNCTION()
 	void CheckIfPlateHasActiveRecipe(APlate* Plate);
 private:
-	FRecipes* GetRandomRecipeFromRecipeBook();
+	FRecipeData* GetRandomRecipeFromRecipeBook();
 
 	UPROPERTY(VIsibleAnywhere)
 	UDataTable* RecipesDataTable;
 
 	TArray<FRecipes*> RecipeBook;
-	FRecipes* CurrentRecipeData;
+	FRecipeData* ActiveRecipeData;
 	FString RecipesDataTableAssetLocation;
 
 	TArray<AActor*> DeliveryConveyorActors;

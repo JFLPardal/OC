@@ -66,4 +66,5 @@ void APlate::ClearPlate()
         HeldIngredient->Destroy();
         HeldIngredient = nullptr;
     }
+    CurrentRecipeData = FRecipeData{};
 }

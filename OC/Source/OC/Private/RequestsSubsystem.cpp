@@ -11,6 +11,7 @@
 #include "Macros.h"
 #include "FRecipes.h"
 #include "Plate.h"
+#include "RecipeData.h"
 
 URequestsSubsystem::URequestsSubsystem()
 {
@@ -82,8 +83,8 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
-        CurrentRecipeData = GetRandomRecipeFromRecipeBook();
-        OC::PrintRecipe(*CurrentRecipeData, OC::PrintTo::outputAndScreen);
+        ActiveRecipeData = GetRandomRecipeFromRecipeBook();
+        //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }
      
     // subscribe to the OnPlateDelivered events
@@ -112,21 +113,58 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     DTOS("checking if plate has a matching recipe");
     if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
     {
+        const auto PlateIngredients = Plate->GetRecipeData().RecipeIngredients;
+        const auto ActiveRecipeIngredients = ActiveRecipeData->RecipeIngredients;
+
+        const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients);
+
         FString PlateRecipe = Plate->GetRecipeData().RecipeIngredients.ToString();
         UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
+
+        if(PlateHasValidRecipe)
+        {
+            DTOS("VALID RECIPE");
+        }
+        else
+        {
+            DTOS("INVALID RECIPE");
+        }
     }
 }
 
-FRecipes* URequestsSubsystem::GetRandomRecipeFromRecipeBook()
+FRecipeData* URequestsSubsystem::GetRandomRecipeFromRecipeBook()
 {
-    FRecipes* Recipe{nullptr};
-    
+    FRecipeData* RecipeData = new FRecipeData(); // is this leaking? I'm pretty sure it is!
+
+    auto ConvertRecipeBookEntryToRecipeData = [RecipeData](FRecipes* Recipe)
+    {
+        auto AddIngredientToRecipeIfIngredientIsValid = [RecipeData](EIngredient Ingredient)
+        {
+            const bool IngredientIsValid = Ingredient != EIngredient::Invalid;
+            if(IngredientIsValid)
+            {
+                RecipeData->AddIngredient(Ingredient);
+            }
+        };
+
+        if(Recipe)
+        {
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->FirstIngredient);
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->SecondIngredient);
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->ThirdIngredient);
+        }
+    };
+
     const auto numberOfRecipesInBook = RecipeBook.Num();
     if(ensureMsgf(numberOfRecipesInBook > 0, TEXT("Recipe Book has no recipes. Make sure %s has recipes"), *RecipesDataTableAssetLocation))
     {
         const int randomIndex = FMath::RandRange(0, RecipeBook.Num() - 1);
-        Recipe = RecipeBook[randomIndex];
+        FRecipes* Recipe = RecipeBook[randomIndex];
+        ConvertRecipeBookEntryToRecipeData(Recipe);
     }
-    
-    return Recipe;
+
+    FString ActiveRecipe = RecipeData->RecipeIngredients.ToString();
+    UE_LOG(LogTemp, Warning, TEXT("Active Recipe %s"), *ActiveRecipe);
+
+    return RecipeData;
 }
