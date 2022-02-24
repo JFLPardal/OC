@@ -15,6 +15,11 @@ EIngredient AIngredient::GetIngredient() const
     return Ingredient;
 }
 
+void AIngredient::SetIngredient(EIngredient IngredientToSet)
+{
+    Ingredient = IngredientToSet;
+}
+
 FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
 	const bool characterIsHoldingSomething = otherInteractable != nullptr;

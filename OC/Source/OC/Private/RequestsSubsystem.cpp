@@ -15,7 +15,9 @@
 
 URequestsSubsystem::URequestsSubsystem()
 {
-    RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes.DT_Recipes'";
+    //RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes.DT_Recipes'";
+    RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes_Simple.DT_Recipes_Simple'";
+    
     static ConstructorHelpers::FObjectFinder<UDataTable> RecipesDataTableAsset(*RecipesDataTableAssetLocation);
     
     if(ensureMsgf(RecipesDataTableAsset.Succeeded(), TEXT("RecipedDataTable %s not found - check the recipes' data table name"), *RecipesDataTableAssetLocation))

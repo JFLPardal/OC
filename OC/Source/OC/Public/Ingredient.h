@@ -18,6 +18,7 @@ public:
 	AIngredient();
 
 	EIngredient GetIngredient() const;
+	void SetIngredient(EIngredient IngredientToSet);
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:
