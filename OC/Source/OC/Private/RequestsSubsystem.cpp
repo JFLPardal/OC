@@ -85,12 +85,19 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
-        ActiveRecipeData = GetRandomRecipeFromRecipeBook();
+        int index = 0;
+        ActiveRecipesData.InsertDefaulted(index, maxNumberOfSimultaneousActiveRecipes);
+
+        // this implies that we will have maxNumberOfSimultaneousActiveRecipes from the start of the level
+        for(int i = 0; i < ActiveRecipesData.Num(); ++i)
+        {
+            ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
+        }
         //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }
      
     // subscribe to the OnPlateDelivered events
-   {
+    {
         if(UWorld* World = GetWorld())
         {
             UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADeliveryConveyorActor::StaticClass(), DeliveryConveyorActors);
@@ -115,21 +122,24 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     DTOS("checking if plate has a matching recipe");
     if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
     {
-        const auto PlateIngredients = Plate->GetRecipeData().RecipeIngredients;
-        const auto ActiveRecipeIngredients = ActiveRecipeData->RecipeIngredients;
-
-        const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients);
-
         FString PlateRecipe = Plate->GetRecipeData().RecipeIngredients.ToString();
         UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
 
-        if(PlateHasValidRecipe)
+        const auto PlateIngredients = Plate->GetRecipeData().RecipeIngredients;
+
+        for(auto ActiveRecipe : ActiveRecipesData)
         {
-            DTOS("VALID RECIPE");
-        }
-        else
-        {
-            DTOS("INVALID RECIPE");
+            const auto ActiveRecipeIngredients = ActiveRecipe->RecipeIngredients;
+
+            const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients);
+            if(PlateHasValidRecipe)
+            {
+                DTOS("VALID RECIPE");
+            }
+            else
+            {
+                DTOS("INVALID RECIPE");
+            }
         }
     }
 }

@@ -31,11 +31,14 @@ public:
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
 
-	UPROPERTY(VIsibleAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	UDataTable* RecipesDataTable;
 
+	UPROPERTY(EditAnywhere)
+	int maxNumberOfSimultaneousActiveRecipes = 3;
+
 	TArray<FRecipes*> RecipeBook;
-	FRecipeData* ActiveRecipeData;
+	TArray<FRecipeData*> ActiveRecipesData;
 	FString RecipesDataTableAssetLocation;
 
 	TArray<AActor*> DeliveryConveyorActors;
