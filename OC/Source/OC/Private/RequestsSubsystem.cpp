@@ -92,6 +92,7 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
         for(int i = 0; i < ActiveRecipesData.Num(); ++i)
         {
             ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
+            OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
         }
         //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }
@@ -122,16 +123,20 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     DTOS("checking if plate has a matching recipe");
     if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
     {
-        FString PlateRecipe = Plate->GetRecipeData().RecipeIngredients.ToString();
+        auto RecipeData = Plate->GetRecipeData();
+        //OnCompletedRequest.Broadcast(RecipeData);
+
+        FString PlateRecipe = RecipeData.RecipeIngredients.ToString();
         UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
 
-        const auto PlateIngredients = Plate->GetRecipeData().RecipeIngredients;
+        const auto PlateIngredients = RecipeData.RecipeIngredients;
 
         for(auto ActiveRecipe : ActiveRecipesData)
         {
             const auto ActiveRecipeIngredients = ActiveRecipe->RecipeIngredients;
 
-            const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients);
+            const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients) 
+                                           && (PlateIngredients != TStaticBitArray<16>(0));
             if(PlateHasValidRecipe)
             {
                 DTOS("VALID RECIPE");

@@ -6,16 +6,22 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 
 #include "DeliveryConveyorActor.h"
+#include "RecipeData.h"
 
 #include "RequestsSubsystem.generated.h"
 
 class APlate;
 class UDataTable;
 struct FRecipes;
-struct FRecipeData;
+
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, FRecipeData, GeneratedRequest);
+
+//UDELEGATE(BlueprintCallable)
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCompletedRequest, FRecipeData, CompletedRequest);
 
 /**
- * Subsystem responsible for storing and all the logic related with Requests
+ * Subsystem responsible for storage and the logic related with Requests
  */
 UCLASS()
 class OC_API URequestsSubsystem : public UGameInstanceSubsystem
@@ -25,6 +31,12 @@ public:
 	URequestsSubsystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FGeneratedNewRequest OnGeneratedNewRequest;
+
+	//UPROPERTY(BlueprintAssignable, Category="Events")
+	//FCompletedRequest OnCompletedRequest;
 
 	UFUNCTION()
 	void CheckIfPlateHasActiveRecipe(APlate* Plate);
