@@ -15,10 +15,10 @@ class UDataTable;
 struct FRecipes;
 
 UDELEGATE(BlueprintCallable)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, FRecipeData, GeneratedRequest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, FRecipeData, GeneratedRequestData);
 
-//UDELEGATE(BlueprintCallable)
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCompletedRequest, FRecipeData, CompletedRequest);
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCompletedRequest, FRecipeData, CompletedRequestData);
 
 /**
  * Subsystem responsible for storage and the logic related with Requests
@@ -35,13 +35,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Events")
 	FGeneratedNewRequest OnGeneratedNewRequest;
 
-	//UPROPERTY(BlueprintAssignable, Category="Events")
-	//FCompletedRequest OnCompletedRequest;
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FCompletedRequest OnCompletedRequest;
 
 	UFUNCTION()
 	void CheckIfPlateHasActiveRecipe(APlate* Plate);
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
+	void GenerateRecipe();
 
 	UPROPERTY(VisibleAnywhere)
 	UDataTable* RecipesDataTable;
@@ -54,4 +55,6 @@ private:
 	FString RecipesDataTableAssetLocation;
 
 	TArray<AActor*> DeliveryConveyorActors;
+
+	FTimerHandle GenerateRecipeTimer;
 };

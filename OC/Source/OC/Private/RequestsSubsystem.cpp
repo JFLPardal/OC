@@ -7,6 +7,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Class.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 #include "Macros.h"
 #include "FRecipes.h"
@@ -82,21 +83,7 @@ namespace OC
 }
 
 void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-    if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
-    {
-        int index = 0;
-        ActiveRecipesData.InsertDefaulted(index, maxNumberOfSimultaneousActiveRecipes);
-
-        // this implies that we will have maxNumberOfSimultaneousActiveRecipes from the start of the level
-        for(int i = 0; i < ActiveRecipesData.Num(); ++i)
-        {
-            ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
-            OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
-        }
-        //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
-    }
-     
+{     
     // subscribe to the OnPlateDelivered events
     {
         if(UWorld* World = GetWorld())
@@ -116,6 +103,31 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
             DTOS("URequestsSubsystem::URequestsSubsystem - World not found")
         }
     }
+
+    // set timer to call GenerateRecipe
+    {
+        const bool ShouldRepeat = false;
+        const float SecondsBeforeGeneratingFirstRecipe = 0.5f;
+        const float SecondsBeforeGeneratingSubsequentRecipes = 5.0f;
+        GetWorld()->GetTimerManager().SetTimer(GenerateRecipeTimer, this, &URequestsSubsystem::GenerateRecipe, SecondsBeforeGeneratingSubsequentRecipes, ShouldRepeat, SecondsBeforeGeneratingFirstRecipe);
+    }
+}
+
+void URequestsSubsystem::GenerateRecipe()
+{
+    if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
+    {
+        int index = 0;
+        ActiveRecipesData.InsertDefaulted(index, maxNumberOfSimultaneousActiveRecipes);
+
+        // this implies that we will have maxNumberOfSimultaneousActiveRecipes from the start of the level
+        for(int i = 0; i < ActiveRecipesData.Num(); ++i)
+        {
+            ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
+            OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
+        }
+        //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
+    }
 }
 
 void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
@@ -124,7 +136,7 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
     {
         auto RecipeData = Plate->GetRecipeData();
-        //OnCompletedRequest.Broadcast(RecipeData);
+        OnCompletedRequest.Broadcast(RecipeData);
 
         FString PlateRecipe = RecipeData.RecipeIngredients.ToString();
         UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
