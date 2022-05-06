@@ -40,6 +40,9 @@ public:
 
 	UFUNCTION()
 	void CheckIfPlateHasActiveRecipe(APlate* Plate);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<EIngredient> GetIngredientsList(FRecipeData recipeData) const;
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
 	void GenerateRecipe();

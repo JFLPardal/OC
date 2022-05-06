@@ -161,6 +161,15 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     }
 }
 
+TArray<EIngredient> URequestsSubsystem::GetIngredientsList(FRecipeData recipeData) const
+{
+    TArray<EIngredient> IngredientList{};
+
+    IngredientList.Add(EIngredient::Tomato);
+
+    return IngredientList;
+}
+
 FRecipeData* URequestsSubsystem::GetRandomRecipeFromRecipeBook()
 {
     FRecipeData* RecipeData = new FRecipeData(); // is this leaking? I'm pretty sure it is!
