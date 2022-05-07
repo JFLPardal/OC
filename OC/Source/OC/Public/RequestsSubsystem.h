@@ -15,7 +15,7 @@ class UDataTable;
 struct FRecipes;
 
 UDELEGATE(BlueprintCallable)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, FRecipeData, GeneratedRequestData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, const FRecipeData&, GeneratedRequestData);
 
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCompletedRequest, FRecipeData, CompletedRequestData);
@@ -45,6 +45,8 @@ public:
 	TArray<EIngredient> GetIngredientsList(FRecipeData recipeData) const;
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
+	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
+
 	void GenerateRecipe();
 
 	UPROPERTY(VisibleAnywhere)
@@ -55,6 +57,7 @@ private:
 
 	TArray<FRecipes*> RecipeBook;
 	TArray<FRecipeData*> ActiveRecipesData;
+	//TArray<TSharedPtr<FRecipeData>> ActiveRecipesData;
 	FString RecipesDataTableAssetLocation;
 
 	TArray<AActor*> DeliveryConveyorActors;
