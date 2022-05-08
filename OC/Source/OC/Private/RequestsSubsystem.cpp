@@ -115,6 +115,7 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void URequestsSubsystem::GenerateRecipe()
 {
+    dsd.AddIngredient(EIngredient::Lettuce);
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
         int index = 0;
@@ -125,8 +126,8 @@ void URequestsSubsystem::GenerateRecipe()
         {
             //ActiveRecipesData[i] = MakeShared<FRecipeData>(GetSharedPtrToRandomRecipeFromRecipeBook());
             ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
-            //FRecipeData f{ *ActiveRecipesData[i] };
-            OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
+            //OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
+            OnGeneratedNewRequest.Broadcast(dsd);
         }
         //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }
@@ -163,7 +164,7 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     }
 }
 
-TArray<EIngredient> URequestsSubsystem::GetIngredientsList(FRecipeData recipeData) const
+TArray<EIngredient> URequestsSubsystem::GetIngredientsList(const FRecipeData& recipeData) const
 {
     return recipeData.GetIngredients();
 }

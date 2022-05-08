@@ -42,7 +42,7 @@ public:
 	void CheckIfPlateHasActiveRecipe(APlate* Plate);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<EIngredient> GetIngredientsList(FRecipeData recipeData) const;
+	TArray<EIngredient> GetIngredientsList(const FRecipeData& recipeData) const;
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
 	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
@@ -55,6 +55,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	int maxNumberOfSimultaneousActiveRecipes = 3;
 
+	FRecipeData dsd;
 	TArray<FRecipes*> RecipeBook;
 	TArray<FRecipeData*> ActiveRecipesData;
 	//TArray<TSharedPtr<FRecipeData>> ActiveRecipesData;

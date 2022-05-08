@@ -4,6 +4,10 @@
 #include "InteractableActor.h"
 #include "Components/StaticMeshComponent.h"
 
+#include "Macros.h"
+
+#include "RequestsSubsystem.h"
+
 // Sets default values
 AInteractableActor::AInteractableActor()
 	:InteractableType(EInteractableType::Unspecified)
@@ -32,11 +36,26 @@ EInteractableType AInteractableActor::GetInteractableType() const
 	return InteractableType;
 }
 
+void AInteractableActor::Fad(const FRecipeData& recipe)
+{
+	for (const auto& ingredient : recipe.GetIngredients())
+	{
+		UE_LOG(LogTemp, Error, TEXT("calling Fad with ingredient %d"), ingredient);
+	}
+}
+
 // Called when the game starts or when spawned
 void AInteractableActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (auto World = GetWorld())
+	{
+		if (auto GameInstance = World->GetGameInstance())
+		{
+			GameInstance->GetSubsystem<URequestsSubsystem>()->OnGeneratedNewRequest.AddDynamic(this, &AInteractableActor::Fad);
+		}
+	}	
 }
 
 // Called every frame
