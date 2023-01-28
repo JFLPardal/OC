@@ -43,6 +43,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<EIngredient> GetIngredientsList(const FRecipeData& recipeData) const;
+
+	UFUNCTION(BlueprintCallable, Category="debugDEV")
+	FRecipeData& GetUnchangeableActiveRecipe() { return unchangeableActiveRecipe; }
+	
+	UFUNCTION(BlueprintCallable, Category="debugDEV")
+	FRecipeData& GetDebugActiveRecipe() { return debugActiveRecipe; }
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
 	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
@@ -55,7 +61,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	int maxNumberOfSimultaneousActiveRecipes = 3;
 
-	FRecipeData dsd;
+	FRecipeData unchangeableActiveRecipe;
+	FRecipeData debugActiveRecipe;
 	TArray<FRecipes*> RecipeBook;
 	TArray<FRecipeData*> ActiveRecipesData;
 	//TArray<TSharedPtr<FRecipeData>> ActiveRecipesData;

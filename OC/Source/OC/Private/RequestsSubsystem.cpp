@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Class.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
@@ -29,6 +30,9 @@ URequestsSubsystem::URequestsSubsystem()
         const FString contextString {TEXT("RequestsSubsystem - RecipesDataTable")}; 
         RecipesDataTable->GetAllRows<FRecipes>(contextString, RecipeBook);
     }
+
+    unchangeableActiveRecipe = FRecipeData{};
+    unchangeableActiveRecipe.AddIngredient(EIngredient::Onion);
 }
 
 namespace OC
@@ -108,26 +112,30 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     {
         const bool ShouldRepeat = false;
         const float SecondsBeforeGeneratingFirstRecipe = 0.5f;
-        const float SecondsBeforeGeneratingSubsequentRecipes = 5.0f;
+        const float SecondsBeforeGeneratingSubsequentRecipes = 3.0f;
         GetWorld()->GetTimerManager().SetTimer(GenerateRecipeTimer, this, &URequestsSubsystem::GenerateRecipe, SecondsBeforeGeneratingSubsequentRecipes, ShouldRepeat, SecondsBeforeGeneratingFirstRecipe);
     }
 }
 
 void URequestsSubsystem::GenerateRecipe()
 {
-    dsd.AddIngredient(EIngredient::Lettuce);
+    //debugActiveRecipe.AddIngredient(EIngredient::Lettuce);
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
+        //debugActiveRecipe.AddIngredient(EIngredient::Tomato);
         int index = 0;
         ActiveRecipesData.InsertDefaulted(index, maxNumberOfSimultaneousActiveRecipes);
 
         // this implies that we will have maxNumberOfSimultaneousActiveRecipes from the start of the level
         for(int i = 0; i < ActiveRecipesData.Num(); ++i)
         {
+            //debugActiveRecipe.AddIngredient(EIngredient::Beans);
             //ActiveRecipesData[i] = MakeShared<FRecipeData>(GetSharedPtrToRandomRecipeFromRecipeBook());
             ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
             //OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
-            OnGeneratedNewRequest.Broadcast(dsd);
+            
+            debugActiveRecipe = *ActiveRecipesData[i];
+            OnGeneratedNewRequest.Broadcast(debugActiveRecipe);
         }
         //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }

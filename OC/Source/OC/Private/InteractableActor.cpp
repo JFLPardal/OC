@@ -2,11 +2,12 @@
 
 
 #include "InteractableActor.h"
+#include "UObject/ConstructorHelpers.h"
+
 #include "Components/StaticMeshComponent.h"
-
 #include "Macros.h"
-
 #include "RequestsSubsystem.h"
+
 
 // Sets default values
 AInteractableActor::AInteractableActor()
