@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Class.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
@@ -29,6 +30,9 @@ URequestsSubsystem::URequestsSubsystem()
         const FString contextString {TEXT("RequestsSubsystem - RecipesDataTable")}; 
         RecipesDataTable->GetAllRows<FRecipes>(contextString, RecipeBook);
     }
+
+    unchangeableActiveRecipe = FRecipeData{};
+    unchangeableActiveRecipe.AddIngredient(EIngredient::Onion);
 }
 
 namespace OC
@@ -108,23 +112,30 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     {
         const bool ShouldRepeat = false;
         const float SecondsBeforeGeneratingFirstRecipe = 0.5f;
-        const float SecondsBeforeGeneratingSubsequentRecipes = 5.0f;
+        const float SecondsBeforeGeneratingSubsequentRecipes = 3.0f;
         GetWorld()->GetTimerManager().SetTimer(GenerateRecipeTimer, this, &URequestsSubsystem::GenerateRecipe, SecondsBeforeGeneratingSubsequentRecipes, ShouldRepeat, SecondsBeforeGeneratingFirstRecipe);
     }
 }
 
 void URequestsSubsystem::GenerateRecipe()
 {
+    //debugActiveRecipe.AddIngredient(EIngredient::Lettuce);
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
+        //debugActiveRecipe.AddIngredient(EIngredient::Tomato);
         int index = 0;
         ActiveRecipesData.InsertDefaulted(index, maxNumberOfSimultaneousActiveRecipes);
 
         // this implies that we will have maxNumberOfSimultaneousActiveRecipes from the start of the level
         for(int i = 0; i < ActiveRecipesData.Num(); ++i)
         {
+            //debugActiveRecipe.AddIngredient(EIngredient::Beans);
+            //ActiveRecipesData[i] = MakeShared<FRecipeData>(GetSharedPtrToRandomRecipeFromRecipeBook());
             ActiveRecipesData[i] = GetRandomRecipeFromRecipeBook();
-            OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
+            //OnGeneratedNewRequest.Broadcast(*ActiveRecipesData[i]);
+            
+            debugActiveRecipe = *ActiveRecipesData[i];
+            OnGeneratedNewRequest.Broadcast(debugActiveRecipe);
         }
         //OC::PrintRecipe(*ActiveRecipeData, OC::PrintTo::outputAndScreen);
     }
@@ -161,18 +172,51 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
     }
 }
 
-TArray<EIngredient> URequestsSubsystem::GetIngredientsList(FRecipeData recipeData) const
+TArray<EIngredient> URequestsSubsystem::GetIngredientsList(const FRecipeData& recipeData) const
 {
-    TArray<EIngredient> IngredientList{};
-
-    IngredientList.Add(EIngredient::Tomato);
-
-    return IngredientList;
+    return recipeData.GetIngredients();
 }
 
 FRecipeData* URequestsSubsystem::GetRandomRecipeFromRecipeBook()
 {
     FRecipeData* RecipeData = new FRecipeData(); // is this leaking? I'm pretty sure it is!
+
+    auto ConvertRecipeBookEntryToRecipeData = [RecipeData](FRecipes* Recipe)
+    {
+        auto AddIngredientToRecipeIfIngredientIsValid = [RecipeData](EIngredient Ingredient)
+        {
+            const bool IngredientIsValid = Ingredient != EIngredient::Invalid;
+            if(IngredientIsValid)
+            {
+                RecipeData->AddIngredient(Ingredient);
+            }
+        };
+
+        if(Recipe)
+        {
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->FirstIngredient);
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->SecondIngredient);
+            AddIngredientToRecipeIfIngredientIsValid(Recipe->ThirdIngredient);
+        }
+    };
+
+    const auto numberOfRecipesInBook = RecipeBook.Num();
+    if(ensureMsgf(numberOfRecipesInBook > 0, TEXT("Recipe Book has no recipes. Make sure %s has recipes"), *RecipesDataTableAssetLocation))
+    {
+        const int randomIndex = FMath::RandRange(0, RecipeBook.Num() - 1);
+        FRecipes* Recipe = RecipeBook[randomIndex];
+        ConvertRecipeBookEntryToRecipeData(Recipe);
+    }
+
+    FString ActiveRecipe = RecipeData->RecipeIngredients.ToString();
+    UE_LOG(LogTemp, Warning, TEXT("Active Recipe %s"), *ActiveRecipe);
+
+    return RecipeData;
+}
+
+TSharedPtr<FRecipeData> URequestsSubsystem::GetSharedPtrToRandomRecipeFromRecipeBook()
+{
+    TSharedPtr<FRecipeData> RecipeData = MakeShared<FRecipeData>(); // is this leaking? I'm pretty sure it is!
 
     auto ConvertRecipeBookEntryToRecipeData = [RecipeData](FRecipes* Recipe)
     {

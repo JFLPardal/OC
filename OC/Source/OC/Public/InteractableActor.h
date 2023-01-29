@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "EInteractableType.h"
+#include "RecipeData.h"
+
 #include "InteractableActor.generated.h"
 
 class UStaticMeshComponent;
@@ -49,6 +52,9 @@ public:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 	EInteractableType GetInteractableType() const;
+
+	UFUNCTION()
+	void Fad(const FRecipeData& recipe);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

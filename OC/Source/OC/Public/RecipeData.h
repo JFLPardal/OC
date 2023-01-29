@@ -15,10 +15,14 @@ struct FRecipeData
 	GENERATED_USTRUCT_BODY()
 public:
 	FRecipeData();
+	FRecipeData(const FRecipeData&);
+
 	~FRecipeData();
 
 	bool CanAddIngrendient(EIngredient IngredientToAdd) const;
 	void AddIngredient(EIngredient IngredientToAdd);
+
+	TArray<EIngredient> GetIngredients() const;
 //private:
 	TStaticBitArray<16> RecipeIngredients;
 };
