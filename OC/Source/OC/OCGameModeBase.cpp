@@ -3,7 +3,7 @@
 
 #include "OCGameModeBase.h"
 
-#include "Blueprint/UserWidget.h"
+#include "ActiveRecipeWidget.h"
 #include "Macros.h"
 #include "RequestsSubsystem.h"
 
@@ -15,23 +15,31 @@ void AOCGameModeBase::BeginPlay()
 	{
 		if (auto GameInstance = World->GetGameInstance())
 		{
-			auto RequestsSubsystem = GameInstance->GetSubsystem<URequestsSubsystem>();
-
-			RequestsSubsystem->OnGeneratedNewRequest.AddDynamic(this, &AOCGameModeBase::GeneratedNewRequest);
-			RequestsSubsystem->OnCompletedRequest.AddDynamic(this, &AOCGameModeBase::CompletedRequest);
+			RequestsSubsystem = GameInstance->GetSubsystem<URequestsSubsystem>();
+			if (RequestsSubsystem)
+			{
+				RequestsSubsystem->OnGeneratedNewRequest.AddDynamic(this, &AOCGameModeBase::GeneratedNewRequest);
+				RequestsSubsystem->OnCompletedRequest.AddDynamic(this, &AOCGameModeBase::CompletedRequest);
+			}
 		}
 	}
 }
 
 void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestData)
 {
-	if (ensureMsgf(RecipeWidget, TEXT("RecipeWidget not set in GameMode")))
+	if (ensureMsgf(ActiveRecipeWidgetBlueprint, TEXT("RecipeWidget not set in GameMode")))
 	{
-		ActiveRecipeWidget = CreateWidget(GetWorld(), RecipeWidget);
+		ActiveRecipeWidget = Cast<UActiveRecipeWidget>(CreateWidget(GetWorld(), ActiveRecipeWidgetBlueprint));
 		if (ActiveRecipeWidget)
 		{
-			// TODO set ActiveRecipeWidget's RecipeData to GeneratedRequestData
-			// this needs ActiveRecipe to be a C++ class as well
+			ActiveRecipeWidget->SetRecipeData(GeneratedRequestData);
+			
+			// Widget's position
+			FWidgetTransform WidgetTransform;
+			WidgetTransform.Translation = FVector2D(550.0f, 150.0f);
+			ActiveRecipeWidget->SetRenderTransform(WidgetTransform);
+			ActiveRecipeWidget->SetColorAndOpacity(FLinearColor::Green);
+
 			ActiveRecipeWidget->AddToViewport();
 		}
 	}
@@ -39,5 +47,5 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 
 void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 {
-	DTOS("request complete");
+	ActiveRecipeWidget->SetVisibility(ESlateVisibility::Hidden);
 }

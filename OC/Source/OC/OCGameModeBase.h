@@ -13,7 +13,8 @@
  * 
  */
 
-class UUserWidget;
+class UActiveRecipeWidget;
+class URequestsSubsystem;
 
 UCLASS()
 class OC_API AOCGameModeBase : public AGameModeBase
@@ -26,10 +27,11 @@ public:
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
 	UFUNCTION()
 	void CompletedRequest(FRecipeData CompletedRequestData);
-
 private:
-	UPROPERTY(EditAnywhere, Category="RecipeUI")
-	TSubclassOf<UUserWidget> RecipeWidget;
-
-	UUserWidget* ActiveRecipeWidget;
+	URequestsSubsystem* RequestsSubsystem;
+	
+	UPROPERTY(EditAnywhere, Category = "RecipeUI")
+	TSubclassOf<UActiveRecipeWidget> ActiveRecipeWidgetBlueprint;
+	
+	UActiveRecipeWidget* ActiveRecipeWidget;
 };
