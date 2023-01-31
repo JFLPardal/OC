@@ -34,4 +34,7 @@ private:
 	TSubclassOf<UActiveRecipeWidget> ActiveRecipeWidgetBlueprint;
 	
 	UActiveRecipeWidget* ActiveRecipeWidget;
+
+	// TODO delete this when using a vector of ActiveRecipeWidget
+	int NumberOfGeneratedRecipeWidgets = 0;
 };
