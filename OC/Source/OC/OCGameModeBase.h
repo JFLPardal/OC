@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-
+#include "VisualLogger/VisualLoggerDebugSnapshotInterface.h"
 #include "RecipeData.h"
 
 #include "OCGameModeBase.generated.h"
@@ -17,7 +17,7 @@ class UActiveRecipeWidget;
 class URequestsSubsystem;
 
 UCLASS()
-class OC_API AOCGameModeBase : public AGameModeBase
+class OC_API AOCGameModeBase : public AGameModeBase, public IVisualLoggerDebugSnapshotInterface
 {
 	GENERATED_BODY()
 public:
@@ -37,4 +37,8 @@ private:
 
 	// TODO delete this when using a vector of ActiveRecipeWidget
 	int NumberOfGeneratedRecipeWidgets = 0;
+private:
+#if ENABLE_VISUAL_LOG
+	virtual void GrabDebugSnapshot(FVisualLogEntry* Snapshot) const override;
+#endif
 };

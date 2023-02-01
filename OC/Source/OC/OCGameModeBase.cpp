@@ -23,6 +23,8 @@ void AOCGameModeBase::BeginPlay()
 			}
 		}
 	}
+
+	UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("begin play"));
 }
 
 void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestData)
@@ -43,6 +45,7 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 			ActiveRecipeWidget->AddToViewport();
 
 			++NumberOfGeneratedRecipeWidgets;
+			UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("Generated New Request"));
 		}
 	}
 }
@@ -51,3 +54,17 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 {
 	ActiveRecipeWidget->SetVisibility(ESlateVisibility::Hidden);
 }
+
+#if ENABLE_VISUAL_LOG
+void AOCGameModeBase::GrabDebugSnapshot(FVisualLogEntry* Snapshot) const
+{
+	IVisualLoggerDebugSnapshotInterface::GrabDebugSnapshot(Snapshot);
+
+	const int32 CategoryIndex = Snapshot->Status.AddZeroed();
+	FVisualLogStatusCategory& PlaceableCategory = Snapshot->Status[CategoryIndex];
+	PlaceableCategory.Category = TEXT("AOCGameModeBase");
+
+	PlaceableCategory.Add(TEXT("NumberOfGeneratedRecipes"), FString::FromInt(NumberOfGeneratedRecipeWidgets));
+
+}
+#endif
