@@ -32,8 +32,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FText GetIngredientName() const { return IngredientName; }
-	
-	UPROPERTY(EditAnywhere)
+
 	FText IngredientName;
 private:
 };
