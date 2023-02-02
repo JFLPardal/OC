@@ -49,6 +49,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="debugDEV")
 	FRecipeData& GetDebugActiveRecipe() { return debugActiveRecipe; }
+
+	void DebugGenerateNewRequest();
+	void DebugCompleteOldestRequest();
 private:
 	FRecipeData* GetRandomRecipeFromRecipeBook();
 	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
@@ -58,7 +61,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UDataTable* RecipesDataTable;
 
-	UPROPERTY(EditAnywhere)
 	int maxNumberOfSimultaneousActiveRecipes = 3;
 
 	FRecipeData unchangeableActiveRecipe;

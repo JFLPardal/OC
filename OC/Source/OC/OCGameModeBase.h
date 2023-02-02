@@ -27,6 +27,12 @@ public:
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
 	UFUNCTION()
 	void CompletedRequest(FRecipeData CompletedRequestData);
+
+	UFUNCTION(Exec, Category = "Requests")
+	void DebugGenerateNewRequest();
+
+	UFUNCTION(Exec, Category = "Requests")
+	void DebugCompleteOldestRequest();
 private:
 	URequestsSubsystem* RequestsSubsystem;
 	

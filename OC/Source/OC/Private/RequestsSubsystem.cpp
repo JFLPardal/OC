@@ -15,6 +15,14 @@
 #include "Plate.h"
 #include "RecipeData.h"
 
+static TAutoConsoleVariable<int32> CVarMaxNumberOfSimultaneousActiveRecipes
+(
+    TEXT("GameVars.Requests.MaxNumberOfSimultaneousActiveRecipes"),
+    3,
+    TEXT("exposed this way as it's not easy to change Subsystem variables without recompiling the game"),
+    ECVF_Default
+); // worth changing the flag in the future so that this can be fetched from .ini
+
 URequestsSubsystem::URequestsSubsystem()
 {
     //RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes.DT_Recipes'";
@@ -175,6 +183,21 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
 TArray<EIngredient> URequestsSubsystem::GetIngredientsList(const FRecipeData& recipeData) const
 {
     return recipeData.GetIngredients();
+}
+
+void URequestsSubsystem::DebugGenerateNewRequest()
+{
+    GenerateRecipe();
+}
+
+void URequestsSubsystem::DebugCompleteOldestRequest()
+{
+    auto OldestRequest = *ActiveRecipesData[0];
+
+    OnCompletedRequest.Broadcast(OldestRequest);
+
+    ActiveRecipesData.RemoveAt(0);
+
 }
 
 FRecipeData* URequestsSubsystem::GetRandomRecipeFromRecipeBook()

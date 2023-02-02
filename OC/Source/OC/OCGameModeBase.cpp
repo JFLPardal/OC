@@ -55,6 +55,22 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 	ActiveRecipeWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
+void AOCGameModeBase::DebugCompleteOldestRequest()
+{
+	if (RequestsSubsystem)
+	{
+		RequestsSubsystem->DebugCompleteOldestRequest();
+	}
+}
+
+void AOCGameModeBase::DebugGenerateNewRequest()
+{
+	if (RequestsSubsystem) 
+	{
+		RequestsSubsystem->DebugGenerateNewRequest();
+	}
+}
+
 #if ENABLE_VISUAL_LOG
 void AOCGameModeBase::GrabDebugSnapshot(FVisualLogEntry* Snapshot) const
 {
