@@ -52,11 +52,7 @@ public:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 	EInteractableType GetInteractableType() const;
-
-	UFUNCTION()
-	void Fad(const FRecipeData& recipe);
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 protected:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Setup")

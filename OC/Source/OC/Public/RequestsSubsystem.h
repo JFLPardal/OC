@@ -44,33 +44,22 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<EIngredient> GetIngredientsList(const FRecipeData& recipeData) const;
 
-	UFUNCTION(BlueprintCallable, Category="debugDEV")
-	FRecipeData& GetUnchangeableActiveRecipe() { return unchangeableActiveRecipe; }
-	
-	UFUNCTION(BlueprintCallable, Category="debugDEV")
-	FRecipeData& GetDebugActiveRecipe() { return debugActiveRecipe; }
-
 	void DebugGenerateNewRequest();
 	void DebugCompleteOldestRequest();
 private:
-	FRecipeData* GetRandomRecipeFromRecipeBook();
-	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
-
-	void GenerateRecipe();
-
 	UPROPERTY(VisibleAnywhere)
 	UDataTable* RecipesDataTable;
 
-	int maxNumberOfSimultaneousActiveRecipes = 3;
+	uint8 maxNumberOfSimultaneousActiveRecipes = 3;
 
-	FRecipeData unchangeableActiveRecipe;
-	FRecipeData debugActiveRecipe;
 	TArray<FRecipes*> RecipeBook;
-	TArray<FRecipeData*> ActiveRecipesData;
-	//TArray<TSharedPtr<FRecipeData>> ActiveRecipesData;
+	TArray<TSharedPtr<FRecipeData>> ActiveRecipes;
 	FString RecipesDataTableAssetLocation;
 
 	TArray<AActor*> DeliveryConveyorActors;
 
 	FTimerHandle GenerateRecipeTimer;
+private:
+	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
+	void GenerateRecipe();
 };
