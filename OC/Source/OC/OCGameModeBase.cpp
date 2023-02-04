@@ -45,7 +45,7 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 			ActiveRecipeWidget->AddToViewport();
 
 			++NumberOfGeneratedRecipeWidgets;
-			UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("Generated New Request"));
+			UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("Generated New RecipeWidget, %d RecipeWidgets generated"), NumberOfGeneratedRecipeWidgets);
 		}
 	}
 }
@@ -81,6 +81,5 @@ void AOCGameModeBase::GrabDebugSnapshot(FVisualLogEntry* Snapshot) const
 	PlaceableCategory.Category = TEXT("AOCGameModeBase");
 
 	PlaceableCategory.Add(TEXT("NumberOfGeneratedRecipes"), FString::FromInt(NumberOfGeneratedRecipeWidgets));
-
 }
 #endif

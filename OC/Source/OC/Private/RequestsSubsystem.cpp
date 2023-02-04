@@ -10,27 +10,27 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
-#include "Macros.h"
+#include "CustomCVars.h"
 #include "FRecipes.h"
+#include "Macros.h"
 #include "Plate.h"
 #include "RecipeData.h"
 
-// worth changing the flag in the future so that this can be fetched from .ini
-static TAutoConsoleVariable<int32> CVarMaxNumberOfSimultaneousActiveRecipes
-(
-    TEXT("GameVars.Requests.MaxNumberOfSimultaneousActiveRecipes"),
-    3,
-    TEXT("exposed this way as it's not easy to change Subsystem variables without recompiling the game"),
-    ECVF_Default
-); 
+namespace Requests
+{
+    FString SimpleRecipesDataTableAssetLocation{ "DataTable'/Game/DT_Recipes_Simple.DT_Recipes_Simple'" };
+    FString DefaultRecipesDataTableAssetLocation{ "DataTable'/Game/DT_Recipes.DT_Recipes'" };
+}
+
 
 URequestsSubsystem::URequestsSubsystem()
 {
-    //RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes.DT_Recipes'";
-    RecipesDataTableAssetLocation = "DataTable'/Game/DT_Recipes_Simple.DT_Recipes_Simple'";
+    RecipesDataTableAssetLocation = CVarShouldUseSimpleRecipeBook->GetBool() ?
+        Requests::SimpleRecipesDataTableAssetLocation :
+        Requests::DefaultRecipesDataTableAssetLocation ;
     
-    static ConstructorHelpers::FObjectFinder<UDataTable> RecipesDataTableAsset(*RecipesDataTableAssetLocation);
-    
+    ConstructorHelpers::FObjectFinder<UDataTable> RecipesDataTableAsset = ConstructorHelpers::FObjectFinder<UDataTable>(*RecipesDataTableAssetLocation);
+
     if(ensureMsgf(RecipesDataTableAsset.Succeeded(), TEXT("RecipedDataTable %s not found - check the recipes' data table name"), *RecipesDataTableAssetLocation))
     {
         RecipesDataTable = RecipesDataTableAsset.Object;
@@ -40,57 +40,6 @@ URequestsSubsystem::URequestsSubsystem()
         RecipesDataTable->GetAllRows<FRecipes>(contextString, RecipeBook);
     }
     maxNumberOfSimultaneousActiveRecipes = static_cast<uint8>(CVarMaxNumberOfSimultaneousActiveRecipes->GetInt());
-}
-
-namespace OC
-{
-    enum class PrintTo
-    {
-        outputOnly,
-        screenOnly,
-        outputAndScreen,
-    };
-
-    void PrintRecipe(const FRecipes& Recipe, OC::PrintTo printLocation)
-    {
-        const auto GetStringValue = [](EIngredient IngredientAsEnum) -> FString {return UEnum::GetValueAsString(IngredientAsEnum); };
-        const auto PrintToOutput = [&](const FRecipes& Recipe) 
-        { 
-            UE_LOG(LogTemp, Warning, TEXT(" \nFirst ingredient \t%s\nSecond ingredient \t%s\nThird ingredient \t%s\n"), 
-                *GetStringValue(Recipe.FirstIngredient),
-                *GetStringValue(Recipe.SecondIngredient),
-                *GetStringValue(Recipe.ThirdIngredient)
-            );
-        };
-        const auto PrintToScreen = [&](const FRecipes& Recipe) 
-        {
-            FString FullRecipe = GetStringValue(Recipe.FirstIngredient) + "\n" 
-                            + GetStringValue(Recipe.SecondIngredient)+ "\n"
-                            + GetStringValue(Recipe.ThirdIngredient);
-            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FullRecipe);
-        };
-
-        using namespace OC;
-        switch(printLocation)
-        {
-            case PrintTo::outputOnly :
-            {
-                PrintToOutput(Recipe);
-                break;
-            }
-            case PrintTo::screenOnly :
-            {
-                PrintToScreen(Recipe);
-                break;
-            }
-            case PrintTo::outputAndScreen :
-            {
-                PrintToOutput(Recipe);
-                PrintToScreen(Recipe);
-                break;
-            }
-        }
-    }
 }
 
 void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -175,16 +124,6 @@ TArray<EIngredient> URequestsSubsystem::GetIngredientsList(const FRecipeData& re
     return recipeData.GetIngredients();
 }
 
-void URequestsSubsystem::DebugGenerateNewRequest()
-{
-    GenerateRecipe();
-}
-
-void URequestsSubsystem::DebugCompleteOldestRequest()
-{
-    ActiveRecipes.Pop();
-}
-
 TSharedPtr<FRecipeData> URequestsSubsystem::GetSharedPtrToRandomRecipeFromRecipeBook()
 {
     TSharedPtr<FRecipeData> RecipeData = MakeShared<FRecipeData>();
@@ -219,3 +158,63 @@ TSharedPtr<FRecipeData> URequestsSubsystem::GetSharedPtrToRandomRecipeFromRecipe
     return RecipeData;
 }
 
+void URequestsSubsystem::DebugGenerateNewRequest()
+{
+    GenerateRecipe();
+}
+
+void URequestsSubsystem::DebugCompleteOldestRequest()
+{
+    ActiveRecipes.Pop();
+}
+
+namespace OC
+{
+    enum class PrintTo
+    {
+        outputOnly,
+        screenOnly,
+        outputAndScreen,
+    };
+
+    void PrintRecipe(const FRecipes& Recipe, OC::PrintTo printLocation)
+    {
+        const auto GetStringValue = [](EIngredient IngredientAsEnum) -> FString {return UEnum::GetValueAsString(IngredientAsEnum); };
+        const auto PrintToOutput = [&](const FRecipes& Recipe)
+        {
+            UE_LOG(LogTemp, Warning, TEXT(" \nFirst ingredient \t%s\nSecond ingredient \t%s\nThird ingredient \t%s\n"),
+                *GetStringValue(Recipe.FirstIngredient),
+                *GetStringValue(Recipe.SecondIngredient),
+                *GetStringValue(Recipe.ThirdIngredient)
+            );
+        };
+        const auto PrintToScreen = [&](const FRecipes& Recipe)
+        {
+            FString FullRecipe = GetStringValue(Recipe.FirstIngredient) + "\n"
+                + GetStringValue(Recipe.SecondIngredient) + "\n"
+                + GetStringValue(Recipe.ThirdIngredient);
+            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FullRecipe);
+        };
+
+        using namespace OC;
+        switch (printLocation)
+        {
+        case PrintTo::outputOnly:
+        {
+            PrintToOutput(Recipe);
+            break;
+        }
+        case PrintTo::screenOnly:
+        {
+            PrintToScreen(Recipe);
+            break;
+        }
+        case PrintTo::outputAndScreen:
+        {
+            PrintToOutput(Recipe);
+            PrintToScreen(Recipe);
+            break;
+        }
+        }
+    }
+}
