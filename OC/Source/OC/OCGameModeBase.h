@@ -39,10 +39,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "RecipeUI")
 	TSubclassOf<UActiveRecipeWidget> ActiveRecipeWidgetBlueprint;
 	
-	UActiveRecipeWidget* ActiveRecipeWidget;
-
-	// TODO delete this when using a vector of ActiveRecipeWidget
-	int NumberOfGeneratedRecipeWidgets = 0;
+	TArray<UActiveRecipeWidget*> ActiveRecipeWidgetArray;
 private:
 #if ENABLE_VISUAL_LOG
 	virtual void GrabDebugSnapshot(FVisualLogEntry* Snapshot) const override;

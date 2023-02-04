@@ -23,6 +23,8 @@ public:
 	void AddIngredient(EIngredient IngredientToAdd);
 
 	TArray<EIngredient> GetIngredients() const;
+
+	bool operator==(FRecipeData const& Recipe);
 //private:
 	TStaticBitArray<16> RecipeIngredients;
 };

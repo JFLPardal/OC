@@ -165,7 +165,12 @@ void URequestsSubsystem::DebugGenerateNewRequest()
 
 void URequestsSubsystem::DebugCompleteOldestRequest()
 {
-    ActiveRecipes.Pop();
+    if (ActiveRecipes.Num() > 0)
+    {
+        FRecipeData OldestRecipe = *ActiveRecipes[0];
+        OnCompletedRequest.Broadcast(OldestRecipe);
+        ActiveRecipes.RemoveAt(0);
+    }
 }
 
 namespace OC

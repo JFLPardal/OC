@@ -19,6 +19,7 @@ class OC_API UActiveRecipeWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	void SetRecipeData(FRecipeData Recipe);
+	FRecipeData GetRecipeData() const { return RecipeData; }
 
 	UFUNCTION(BlueprintCallable)
 	UUIIngredientSlotWidget* GetIngredientSlotWidget() { return IngredientSlotWidget; }

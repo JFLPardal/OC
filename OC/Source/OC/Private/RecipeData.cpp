@@ -12,6 +12,11 @@ FRecipeData::FRecipeData(const FRecipeData& other)
     RecipeIngredients = other.RecipeIngredients;
 }
 
+bool FRecipeData::operator==(FRecipeData const& Recipe)
+{
+    return this->GetIngredients() == Recipe.GetIngredients();
+}
+
 bool FRecipeData::CanAddIngrendient(EIngredient IngredientToAdd) const
 {
     bool RecipeAlreadyHasIngredient = false;
