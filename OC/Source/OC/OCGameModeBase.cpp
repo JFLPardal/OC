@@ -7,6 +7,8 @@
 #include "Macros.h"
 #include "RequestsSubsystem.h"
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 void AOCGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -50,7 +52,7 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 
 			TArray<EIngredient> IngredientsOfNewRecipe = ActiveRecipeWidget->GetRecipeData().GetIngredients();
 
-			UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("Generated New RecipeWidget with [%s %s %s], %d RecipeWidgets generated"), 
+			UE_VLOG(this, TEXT("Requests"), Verbose, TEXT("Generated New RecipeWidget with [%s %s %s], %d RecipeWidgets generated"), 
 				*UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[0]).ToString(),
 				IngredientsOfNewRecipe.IsValidIndex(1) ? *UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[1]).ToString() : TEXT(""),
 				IngredientsOfNewRecipe.IsValidIndex(2) ? *UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[2]).ToString() : TEXT(""),
@@ -60,19 +62,23 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 }
 
 void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
-{
-	auto CompletedRecipeIt = ActiveRecipeWidgetArray.begin();
-	for (; CompletedRecipeIt != ActiveRecipeWidgetArray.end(); ++CompletedRecipeIt)
+{	
+	int32 CompletedRequestIndex = ActiveRecipeWidgetArray.IndexOfByPredicate([&CompletedRequestData](UActiveRecipeWidget const *const RecipeWidget) {return RecipeWidget->GetRecipeData() == CompletedRequestData; });
+	
+	if (ActiveRecipeWidgetArray.IsValidIndex(CompletedRequestIndex))
 	{
-		if ((*CompletedRecipeIt)->GetRecipeData() == CompletedRequestData)
-		{
-			(*CompletedRecipeIt)->SetVisibility(ESlateVisibility::Hidden);
-		}
-	}
+		ActiveRecipeWidgetArray[CompletedRequestIndex]->SetVisibility(ESlateVisibility::Hidden);
+		ActiveRecipeWidgetArray.RemoveAt(CompletedRequestIndex);
+		
+		{ // debug
+			TArray<EIngredient> const CompletedIngredients = CompletedRequestData.GetIngredients();
 
-	if (CompletedRecipeIt != ActiveRecipeWidgetArray.end())
-	{
-		ActiveRecipeWidgetArray.Remove(*CompletedRecipeIt);
+			UE_VLOG(this, TEXT("Rquests"), Verbose, TEXT("Completed request with [%s %s %s], %d active requests remaining"),
+					*UEnum::GetDisplayValueAsText(CompletedIngredients[0]).ToString(),
+					CompletedIngredients.IsValidIndex(1) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[1]).ToString() : TEXT(""),
+					CompletedIngredients.IsValidIndex(2) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[2]).ToString() : TEXT(""),
+					ActiveRecipeWidgetArray.Num());
+		}
 	}
 }
 

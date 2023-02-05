@@ -110,6 +110,7 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
             if(PlateHasValidRecipe)
             {
                 DTOS("VALID RECIPE");
+                break;
             }
             else
             {

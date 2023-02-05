@@ -16,7 +16,7 @@ static TAutoConsoleVariable<int32> CVarMaxNumberOfSimultaneousActiveRecipes
 static TAutoConsoleVariable<bool> CVarShouldUseSimpleRecipeBook
 (
     TEXT("GameVars.Requests.ShouldUseSimpleRecipeBook"),
-    false,
+    true,
     TEXT("true - will use DT_Recipes_Simple as the recipe book \n")
     TEXT("false - will use DT_Recipes as the recipe book"),
     ECVF_SetByConsole
