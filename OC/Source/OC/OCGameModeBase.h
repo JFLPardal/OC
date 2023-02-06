@@ -28,18 +28,33 @@ public:
 	UFUNCTION()
 	void CompletedRequest(FRecipeData CompletedRequestData);
 
+	UFUNCTION(BlueprintCallable)
+	TArray<UActiveRecipeWidget*> const& GetActiveRequestWidgets() const { return ActiveRecipeWidgetArray; }
+	
+	UFUNCTION(BlueprintCallable)
+	UUserWidget* GetActiveRequestsHUDElement() const { return ActiveRequestsHUDElement; }
+
+
 	UFUNCTION(Exec, Category = "Requests")
 	void DebugGenerateNewRequest();
 
 	UFUNCTION(Exec, Category = "Requests")
 	void DebugCompleteOldestRequest();
+protected:
+	UPROPERTY(BlueprintReadWrite, Category = "Requests")
+	TArray<UActiveRecipeWidget*> ActiveRecipeWidgetArray;
+
+
+	UPROPERTY(BlueprintReadWrite, Category = "Requests")
+	UUserWidget* ActiveRequestsHUDElement;
 private:
 	URequestsSubsystem* RequestsSubsystem;
 	
-	UPROPERTY(EditAnywhere, Category = "RecipeUI")
+	UPROPERTY(EditAnywhere, Category = "Requests")
 	TSubclassOf<UActiveRecipeWidget> ActiveRecipeWidgetBlueprint;
 	
-	TArray<UActiveRecipeWidget*> ActiveRecipeWidgetArray;
+	UPROPERTY(EditAnywhere, Category = "Requests")
+	TSubclassOf<UUserWidget> ActiveRequestsHUDElementBlueprint;
 private:
 #if ENABLE_VISUAL_LOG
 	virtual void GrabDebugSnapshot(FVisualLogEntry* Snapshot) const override;

@@ -24,6 +24,8 @@ void AOCGameModeBase::BeginPlay()
 				RequestsSubsystem->OnCompletedRequest.AddDynamic(this, &AOCGameModeBase::CompletedRequest);
 			}
 		}
+
+		ActiveRequestsHUDElement = CreateWidget(GetWorld(), ActiveRequestsHUDElementBlueprint);
 	}
 
 	UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("begin play"));
@@ -50,7 +52,7 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 
 			ActiveRecipeWidgetArray.Add(ActiveRecipeWidget);
 
-			TArray<EIngredient> IngredientsOfNewRecipe = ActiveRecipeWidget->GetRecipeData().GetIngredients();
+			TArray<EIngredient> const IngredientsOfNewRecipe = ActiveRecipeWidget->GetRecipeData().GetIngredients();
 
 			UE_VLOG(this, TEXT("Requests"), Verbose, TEXT("Generated New RecipeWidget with [%s %s %s], %d RecipeWidgets generated"), 
 				*UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[0]).ToString(),
@@ -73,7 +75,7 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 		{ // debug
 			TArray<EIngredient> const CompletedIngredients = CompletedRequestData.GetIngredients();
 
-			UE_VLOG(this, TEXT("Rquests"), Verbose, TEXT("Completed request with [%s %s %s], %d active requests remaining"),
+			UE_VLOG(this, TEXT("Requests"), Verbose, TEXT("Completed request with [%s %s %s], %d active requests remaining"),
 					*UEnum::GetDisplayValueAsText(CompletedIngredients[0]).ToString(),
 					CompletedIngredients.IsValidIndex(1) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[1]).ToString() : TEXT(""),
 					CompletedIngredients.IsValidIndex(2) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[2]).ToString() : TEXT(""),
