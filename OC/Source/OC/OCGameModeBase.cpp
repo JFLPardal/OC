@@ -41,10 +41,7 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 		{
 			ActiveRecipeWidget->SetRecipeData(GeneratedRequestData);
 			
-			// Widget's position
 			FWidgetTransform WidgetTransform;
-			
-			WidgetTransform.Translation = FVector2D(125.0f * ActiveRecipeWidgetArray.Num(), 0.0f);
 			
 			ActiveRecipeWidget->SetRenderTransform(WidgetTransform);
 			ActiveRecipeWidget->SetColorAndOpacity(FLinearColor::Gray);
