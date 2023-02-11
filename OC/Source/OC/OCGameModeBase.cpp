@@ -41,13 +41,11 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 		{
 			ActiveRecipeWidget->SetRecipeData(GeneratedRequestData);
 			
-			FWidgetTransform WidgetTransform;
-			
-			ActiveRecipeWidget->SetRenderTransform(WidgetTransform);
 			ActiveRecipeWidget->SetColorAndOpacity(FLinearColor::Gray);
 			ActiveRecipeWidget->AddToViewport();
 
-			ActiveRecipeWidgetArray.Add(ActiveRecipeWidget);
+			int32 index = ActiveRecipeWidgetArray.Add(ActiveRecipeWidget);
+			OnAddedRequestWidgetToHUD.Broadcast(ActiveRecipeWidgetArray[index]);
 
 			TArray<EIngredient> const IngredientsOfNewRecipe = ActiveRecipeWidget->GetRecipeData().GetIngredients();
 

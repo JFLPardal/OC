@@ -16,12 +16,18 @@
 class UActiveRecipeWidget;
 class URequestsSubsystem;
 
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddedRequestWidgetToHUD, UActiveRecipeWidget*, AddedWidget);
+
 UCLASS()
 class OC_API AOCGameModeBase : public AGameModeBase, public IVisualLoggerDebugSnapshotInterface
 {
 	GENERATED_BODY()
 public:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
 
 	UFUNCTION()
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
@@ -33,7 +39,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	UUserWidget* GetActiveRequestsHUDElement() const { return ActiveRequestsHUDElement; }
-
 
 	UFUNCTION(Exec, Category = "Requests")
 	void DebugGenerateNewRequest();
