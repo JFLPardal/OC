@@ -1,25 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#pragma once
 
 #include "ActiveRecipeWidget.h"
 
 #include "UIIngredientSlotWidget.h"
-#include "Components\CanvasPanel.h"
 #include "Components\VerticalBox.h"
-
-bool UActiveRecipeWidget::Initialize()
-{
-    Super::Initialize();
-
-    IngredientsList = NewObject<UVerticalBox>(this, UVerticalBox::StaticClass());
-    UCanvasPanel* CanvasPanel = Cast<UCanvasPanel>(GetRootWidget());
-
-    if (CanvasPanel)
-    {
-        CanvasPanel->AddChild(IngredientsList);
-    }
-    return true;
-}
 
 void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
 {
@@ -36,7 +21,7 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
             
             if (IngredientsList)
             {
-                IngredientsList->AddChildToVerticalBox(IngredientSlotWidget);
+                IngredientsList->AddChild(IngredientSlotWidget);
             }
         }
     }

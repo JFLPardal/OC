@@ -19,20 +19,17 @@ class OC_API UActiveRecipeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	virtual bool Initialize() override;
-
 	void SetRecipeData(FRecipeData Recipe);
 	FRecipeData GetRecipeData() const { return RecipeData; }
 
 	UFUNCTION(BlueprintCallable)
 	UUIIngredientSlotWidget* GetIngredientSlotWidget() { return IngredientSlotWidget; }
-
+protected:
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* IngredientsList;
 private:
 	FRecipeData RecipeData;	
 	UUIIngredientSlotWidget* IngredientSlotWidget;
-
-	UPROPERTY(EditAnywhere, Category = "RecipeUI")
-	UVerticalBox* IngredientsList;
 
 	UPROPERTY(EditAnywhere, Category = "RecipeUI")
 	TSubclassOf<UUIIngredientSlotWidget> IngredientSlotWidgetBP;	
