@@ -19,6 +19,9 @@ class URequestsSubsystem;
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddedRequestWidgetToHUD, UActiveRecipeWidget*, AddedWidget);
 
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovedRequestWidgetFromHUD, int32, RemovedWidgetIndex);
+
 UCLASS()
 class OC_API AOCGameModeBase : public AGameModeBase, public IVisualLoggerDebugSnapshotInterface
 {
@@ -28,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FRemovedRequestWidgetFromHUD OnRemovedRequestWidgetFromHUD;
 
 	UFUNCTION()
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);

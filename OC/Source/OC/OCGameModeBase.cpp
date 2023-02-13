@@ -66,6 +66,8 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 	{
 		ActiveRecipeWidgetArray[CompletedRequestIndex]->SetVisibility(ESlateVisibility::Hidden);
 		ActiveRecipeWidgetArray.RemoveAt(CompletedRequestIndex);
+
+		OnRemovedRequestWidgetFromHUD.Broadcast(CompletedRequestIndex);
 		
 		{ // debug
 			TArray<EIngredient> const CompletedIngredients = CompletedRequestData.GetIngredients();
