@@ -64,6 +64,7 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
         }
     }
 
+    ActiveRecipes.Reserve(maxNumberOfSimultaneousActiveRecipes);
     // set timer to call GenerateRecipe
     {
         const bool ShouldRepeat = false;
@@ -71,13 +72,14 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
         const float SecondsBeforeGeneratingSubsequentRecipes = 3.0f;
         GetWorld()->GetTimerManager().SetTimer(GenerateRecipeTimer, this, &URequestsSubsystem::GenerateRecipe, SecondsBeforeGeneratingSubsequentRecipes, ShouldRepeat, SecondsBeforeGeneratingFirstRecipe);
     }
+
 }
 
 void URequestsSubsystem::GenerateRecipe()
 {
+    // check if active smaller than max, if so add, else pause/invalidate timer
     if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
     {
-        ActiveRecipes.Reserve(maxNumberOfSimultaneousActiveRecipes);
         for(int numberOfActiveRecipes = ActiveRecipes.Num(); numberOfActiveRecipes < maxNumberOfSimultaneousActiveRecipes; ++numberOfActiveRecipes)
         {
             TSharedPtr<FRecipeData> newRecipe = GetSharedPtrToRandomRecipeFromRecipeBook();
@@ -101,15 +103,18 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
 
         const auto PlateIngredients = RecipeData.RecipeIngredients;
 
+        int const invalidIndex = -1;
+        int32 indexOfCompletedRecipe = invalidIndex;
         for(auto ActiveRecipe : ActiveRecipes)
         {
             const auto ActiveRecipeIngredients = ActiveRecipe->RecipeIngredients;
 
             const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients) 
                                            && (PlateIngredients != TStaticBitArray<16>(0));
+            
             if(PlateHasValidRecipe)
             {
-                DTOS("VALID RECIPE");
+                indexOfCompletedRecipe = ActiveRecipes.IndexOfByKey(ActiveRecipe);
                 break;
             }
             else
@@ -117,6 +122,16 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
                 DTOS("INVALID RECIPE");
             }
         }
+
+        // what happens if we generate a recipe before this function is done processing? Is that possible?
+        bool const shouldDeleteRecipe = indexOfCompletedRecipe != invalidIndex;
+        if (shouldDeleteRecipe)
+        {
+            ActiveRecipes.RemoveAt(indexOfCompletedRecipe);
+            // unpause/? GenerateRecipeTimer
+        }
+
+
     }
 }
 
