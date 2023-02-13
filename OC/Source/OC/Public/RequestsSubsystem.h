@@ -11,8 +11,9 @@
 #include "RequestsSubsystem.generated.h"
 
 class APlate;
-class UDataTable;
 struct FRecipes;
+class UDataTable;
+class URequestSubsystemPOD;
 
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGeneratedNewRequest, const FRecipeData&, GeneratedRequestData);
@@ -59,7 +60,13 @@ private:
 	TArray<AActor*> DeliveryConveyorActors;
 
 	FTimerHandle GenerateRecipeTimer;
+
+	URequestSubsystemPOD* InitData;
 private:
+	void SetInitData();
+	void CreateRecipesDataTable();
+
 	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
+	
 	void GenerateRecipe();
 };

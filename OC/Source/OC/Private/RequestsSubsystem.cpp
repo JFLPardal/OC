@@ -4,10 +4,10 @@
 #include "RequestsSubsystem.h"
 
 #include "Engine/DataTable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Class.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
 #include "CustomCVars.h"
@@ -15,30 +15,22 @@
 #include "Macros.h"
 #include "Plate.h"
 #include "RecipeData.h"
+#include "RequestSubsystemPOD.h"
 
 namespace Requests
 {
     FString SimpleRecipesDataTableAssetLocation{ "DataTable'/Game/DT_Recipes_Simple.DT_Recipes_Simple'" };
     FString DefaultRecipesDataTableAssetLocation{ "DataTable'/Game/DT_Recipes.DT_Recipes'" };
+    FString RequestSubsystemPODLocation{ "RequestSubsystemPOD'/Game/DA_RequestSubsystemPOD.DA_RequestSubsystemPOD'" };
 }
 
 
 URequestsSubsystem::URequestsSubsystem()
 {
-    RecipesDataTableAssetLocation = CVarShouldUseSimpleRecipeBook->GetBool() ?
-        Requests::SimpleRecipesDataTableAssetLocation :
-        Requests::DefaultRecipesDataTableAssetLocation ;
-    
-    ConstructorHelpers::FObjectFinder<UDataTable> RecipesDataTableAsset = ConstructorHelpers::FObjectFinder<UDataTable>(*RecipesDataTableAssetLocation);
 
-    if(ensureMsgf(RecipesDataTableAsset.Succeeded(), TEXT("RecipedDataTable %s not found - check the recipes' data table name"), *RecipesDataTableAssetLocation))
-    {
-        RecipesDataTable = RecipesDataTableAsset.Object;
-        
-        // Cache all recipes
-        const FString contextString {TEXT("RequestsSubsystem - RecipesDataTable")}; 
-        RecipesDataTable->GetAllRows<FRecipes>(contextString, RecipeBook);
-    }
+    SetInitData();
+    CreateRecipesDataTable();
+    
     maxNumberOfSimultaneousActiveRecipes = static_cast<uint8>(CVarMaxNumberOfSimultaneousActiveRecipes->GetInt());
 }
 
@@ -67,12 +59,21 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     ActiveRecipes.Reserve(maxNumberOfSimultaneousActiveRecipes);
     // set timer to call GenerateRecipe
     {
-        const bool ShouldRepeat = false;
-        const float SecondsBeforeGeneratingFirstRecipe = 0.5f;
-        const float SecondsBeforeGeneratingSubsequentRecipes = 3.0f;
-        GetWorld()->GetTimerManager().SetTimer(GenerateRecipeTimer, this, &URequestsSubsystem::GenerateRecipe, SecondsBeforeGeneratingSubsequentRecipes, ShouldRepeat, SecondsBeforeGeneratingFirstRecipe);
-    }
+        if (ensureMsgf(InitData != nullptr, TEXT("InitData in RequestSubsystem was not initialized, requests will not be generated")))
+        {
+            const bool ShouldRepeat = false;
+            const float SecondsBeforeGeneratingFirstRecipe = InitData->SecondsBeforeGeneratingFirstRecipe;
+            const float SecondsBeforeGeneratingSubsequentRecipes = InitData->SecondsBeforeGeneratingSubsequentRequests;
 
+            GetWorld()->GetTimerManager().SetTimer(
+                GenerateRecipeTimer, 
+                this, 
+                &URequestsSubsystem::GenerateRecipe, 
+                SecondsBeforeGeneratingSubsequentRecipes, 
+                ShouldRepeat, 
+                SecondsBeforeGeneratingFirstRecipe);
+        }
+    }
 }
 
 void URequestsSubsystem::GenerateRecipe()
@@ -237,5 +238,32 @@ namespace OC
             break;
         }
         }
+    }
+}
+
+void URequestsSubsystem::CreateRecipesDataTable()
+{
+    RecipesDataTableAssetLocation = CVarShouldUseSimpleRecipeBook->GetBool() ?
+        Requests::SimpleRecipesDataTableAssetLocation :
+        Requests::DefaultRecipesDataTableAssetLocation;
+
+    ConstructorHelpers::FObjectFinder<UDataTable> RecipesDataTableAsset = ConstructorHelpers::FObjectFinder<UDataTable>(*RecipesDataTableAssetLocation);
+
+    if (ensureMsgf(RecipesDataTableAsset.Succeeded(), TEXT("RecipedDataTable %s not found - check the recipes' data table name"), *RecipesDataTableAssetLocation))
+    {
+        RecipesDataTable = RecipesDataTableAsset.Object;
+
+        // Cache all recipes
+        const FString contextString{ TEXT("RequestsSubsystem - RecipesDataTable") };
+        RecipesDataTable->GetAllRows<FRecipes>(contextString, RecipeBook);
+    }
+}
+
+void URequestsSubsystem::SetInitData()
+{
+    ConstructorHelpers::FObjectFinder<URequestSubsystemPOD> InitializerDataAsset = ConstructorHelpers::FObjectFinder<URequestSubsystemPOD>(*Requests::RequestSubsystemPODLocation);
+    if (ensureMsgf(InitializerDataAsset.Succeeded(), TEXT("RequestSubsystemPOD %s not found - check the RequestSubsystemPOD's location"), *Requests::RequestSubsystemPODLocation))
+    {
+        InitData = InitializerDataAsset.Object;
     }
 }
