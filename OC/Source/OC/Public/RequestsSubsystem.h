@@ -59,9 +59,11 @@ private:
 
 	TArray<AActor*> DeliveryConveyorActors;
 
-	FTimerHandle GenerateRecipeTimer;
 
 	URequestSubsystemPOD* InitData;
+
+	FTimerHandle GenerateRecipeTimer;
+	FTimerManager* TimerManager;
 private:
 	void SetInitData();
 	void CreateRecipesDataTable();
@@ -69,4 +71,10 @@ private:
 	TSharedPtr<FRecipeData> GetSharedPtrToRandomRecipeFromRecipeBook();
 	
 	void GenerateRecipe();
+
+	// TODO create an interface with these 4 functions so we can have time based generation and some other type we might want in the future
+	void StartRequestGeneration(bool bIsFirstTimeGenerating);
+	void PauseRequestGeneration();
+	bool IsRequestGenerationPaused();
+	void ResumeRequestGeneration();
 };

@@ -27,7 +27,6 @@ namespace Requests
 
 URequestsSubsystem::URequestsSubsystem()
 {
-
     SetInitData();
     CreateRecipesDataTable();
     
@@ -35,11 +34,14 @@ URequestsSubsystem::URequestsSubsystem()
 }
 
 void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{     
+{    
+    Super::Initialize(Collection);
     // subscribe to the OnPlateDelivered events
     {
         if(UWorld* World = GetWorld())
         {
+            TimerManager = &(GetWorld()->GetTimerManager());
+
             UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADeliveryConveyorActor::StaticClass(), DeliveryConveyorActors);
             if(ensureMsgf(DeliveryConveyorActors.Num() > 0, TEXT("No DeliveryConveyorActors found in World, delivered plates will not be checked for correct recipes")))
             {
@@ -61,32 +63,32 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     {
         if (ensureMsgf(InitData != nullptr, TEXT("InitData in RequestSubsystem was not initialized, requests will not be generated")))
         {
-            const bool ShouldRepeat = false;
-            const float SecondsBeforeGeneratingFirstRecipe = InitData->SecondsBeforeGeneratingFirstRecipe;
-            const float SecondsBeforeGeneratingSubsequentRecipes = InitData->SecondsBeforeGeneratingSubsequentRequests;
-
-            GetWorld()->GetTimerManager().SetTimer(
-                GenerateRecipeTimer, 
-                this, 
-                &URequestsSubsystem::GenerateRecipe, 
-                SecondsBeforeGeneratingSubsequentRecipes, 
-                ShouldRepeat, 
-                SecondsBeforeGeneratingFirstRecipe);
+            bool const bIsFirstTimeGenerating = true;
+            StartRequestGeneration(bIsFirstTimeGenerating);
         }
     }
 }
 
 void URequestsSubsystem::GenerateRecipe()
 {
-    // check if active smaller than max, if so add, else pause/invalidate timer
-    if(ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
+    int numberOfActiveRecipes = ActiveRecipes.Num();
+    if(numberOfActiveRecipes < maxNumberOfSimultaneousActiveRecipes)    
     {
-        for(int numberOfActiveRecipes = ActiveRecipes.Num(); numberOfActiveRecipes < maxNumberOfSimultaneousActiveRecipes; ++numberOfActiveRecipes)
+        if (ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
         {
             TSharedPtr<FRecipeData> newRecipe = GetSharedPtrToRandomRecipeFromRecipeBook();
             ActiveRecipes.Add(newRecipe);
 
             OnGeneratedNewRequest.Broadcast(*newRecipe);
+
+            // check if GenerateRecipeTimer should be paused
+            {
+                bool const shouldPauseGeneratingRequests = ActiveRecipes.Num() >= maxNumberOfSimultaneousActiveRecipes;
+                if (shouldPauseGeneratingRequests)
+                {
+                    PauseRequestGeneration();
+                }
+            }
         }
     }
 }
@@ -129,11 +131,43 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
         if (shouldDeleteRecipe)
         {
             ActiveRecipes.RemoveAt(indexOfCompletedRecipe);
-            // unpause/? GenerateRecipeTimer
+            if (IsRequestGenerationPaused())
+            {
+                ResumeRequestGeneration();
+            }
         }
-
-
     }
+}
+
+bool URequestsSubsystem::IsRequestGenerationPaused()
+{
+    return !TimerManager->IsTimerActive(GenerateRecipeTimer);
+}
+
+void URequestsSubsystem::StartRequestGeneration(bool bIsFirstTimeGenerating)
+{
+    const bool ShouldRepeat = true;
+    const float SecondsBeforeGeneratingSubsequentRecipes = InitData->SecondsBeforeGeneratingSubsequentRequests;
+    const float SecondsBeforeGeneratingFirstRecipe = (bIsFirstTimeGenerating) ? InitData->SecondsBeforeGeneratingFirstRecipe : SecondsBeforeGeneratingSubsequentRecipes;
+
+    TimerManager->SetTimer(
+        GenerateRecipeTimer,
+        this,
+        &URequestsSubsystem::GenerateRecipe,
+        SecondsBeforeGeneratingSubsequentRecipes,
+        ShouldRepeat,
+        SecondsBeforeGeneratingFirstRecipe);
+}
+
+void URequestsSubsystem::ResumeRequestGeneration()
+{
+    bool const bIsFirstTimeGenerating = false;
+    StartRequestGeneration(bIsFirstTimeGenerating);
+}
+
+void URequestsSubsystem::PauseRequestGeneration()
+{
+    TimerManager->ClearTimer(GenerateRecipeTimer);
 }
 
 TArray<EIngredient> URequestsSubsystem::GetIngredientsList(const FRecipeData& recipeData) const
