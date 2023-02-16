@@ -10,6 +10,7 @@
 
 class UUIIngredientSlotWidget;
 class UVerticalBox;
+class UWidgetAnimation;
 
 /**
  * 
@@ -27,10 +28,15 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UVerticalBox* IngredientsList;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	UWidgetAnimation* Show;
 private:
 	FRecipeData RecipeData;	
 	UUIIngredientSlotWidget* IngredientSlotWidget;
 
 	UPROPERTY(EditAnywhere, Category = "RecipeUI")
-	TSubclassOf<UUIIngredientSlotWidget> IngredientSlotWidgetBP;	
+	TSubclassOf<UUIIngredientSlotWidget> IngredientSlotWidgetBP;
+private:
+	void PlayAnimation(UWidgetAnimation* AnimationToPlay);
 };

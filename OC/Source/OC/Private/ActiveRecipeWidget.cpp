@@ -5,6 +5,7 @@
 
 #include "UIIngredientSlotWidget.h"
 #include "Components\VerticalBox.h"
+#include "Animation\WidgetAnimation.h"
 
 void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
 {
@@ -25,4 +26,17 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
             }
         }
     }
+    
+    PlayAnimation(Show);
+}
+
+void UActiveRecipeWidget::PlayAnimation(UWidgetAnimation* AnimationToPlay)
+{
+    float const StartAtTime = 0.0f;
+    int32 const NumOfLoopsToPlay = 1;
+    EUMGSequencePlayMode::Type const SequencePlayMode = EUMGSequencePlayMode::Type::Forward;
+    float const PlaybackSpeed = 1.0f;
+    bool const bRestoreState = true;
+
+    UUserWidget::PlayAnimation(AnimationToPlay, StartAtTime, NumOfLoopsToPlay, SequencePlayMode, PlaybackSpeed, bRestoreState);
 }
