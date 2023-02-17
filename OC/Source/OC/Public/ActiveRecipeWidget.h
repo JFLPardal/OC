@@ -37,6 +37,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "RecipeUI")
 	TSubclassOf<UUIIngredientSlotWidget> IngredientSlotWidgetBP;
+
+	UPROPERTY(EditAnywhere, Category = "RecipeUI")
+	float AnimationsPlaybackSpeed = 1.0f;
 private:
 	void PlayAnimation(UWidgetAnimation* AnimationToPlay);
 };
