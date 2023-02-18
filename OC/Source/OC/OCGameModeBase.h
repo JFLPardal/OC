@@ -52,6 +52,7 @@ public:
 	UFUNCTION(Exec, Category = "Requests")
 	void DebugCompleteOldestRequest();
 protected:
+	// TODO change name to Request
 	UPROPERTY(BlueprintReadWrite, Category = "Requests")
 	TArray<UActiveRecipeWidget*> ActiveRecipeWidgetArray;
 

@@ -25,12 +25,22 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UUIIngredientSlotWidget* GetIngredientSlotWidget() { return IngredientSlotWidget; }
+
+	void Completed();
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UVerticalBox* IngredientsList;
 
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	UWidgetAnimation* Show;
+	
+	UPROPERTY(Transient, meta = (BindWidgetAnim), BlueprintReadOnly)
+	UWidgetAnimation* Hide;
+protected:
+	virtual void OnAnimationFinished_Implementation(UWidgetAnimation const* Animation) override;
+
+	UFUNCTION()
+	void FinishedPlayingHideAnimation();
 private:
 	FRecipeData RecipeData;	
 	UUIIngredientSlotWidget* IngredientSlotWidget;

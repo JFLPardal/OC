@@ -2,10 +2,9 @@
 #pragma once
 
 #include "ActiveRecipeWidget.h"
-
-#include "UIIngredientSlotWidget.h"
-#include "Components\VerticalBox.h"
 #include "Animation\WidgetAnimation.h"
+#include "Components\VerticalBox.h"
+#include "UIIngredientSlotWidget.h"
 
 void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
 {
@@ -28,6 +27,26 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
     }
     
     PlayAnimation(Show);
+}
+
+void UActiveRecipeWidget::Completed()
+{
+    PlayAnimation(Hide);
+}
+
+void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation const* Animation)
+{
+    Super::OnAnimationFinished_Implementation(Animation);
+
+    if (Animation == Hide)
+    {
+        FinishedPlayingHideAnimation();
+    }
+}
+
+void UActiveRecipeWidget::FinishedPlayingHideAnimation()
+{
+    UE_LOG(LogTemp, Warning, TEXT("finished playing hide animation"));
 }
 
 void UActiveRecipeWidget::PlayAnimation(UWidgetAnimation* AnimationToPlay)
