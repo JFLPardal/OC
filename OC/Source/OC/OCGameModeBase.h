@@ -17,7 +17,7 @@ class UActiveRecipeWidget;
 class URequestsSubsystem;
 
 UDELEGATE(BlueprintCallable)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddedRequestWidgetToHUD, UActiveRecipeWidget*, AddedWidget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreatedRequestWidget, UActiveRecipeWidget*, AddedWidget);
 
 UCLASS()
 class OC_API AOCGameModeBase : public AGameModeBase, public IVisualLoggerDebugSnapshotInterface
@@ -27,7 +27,7 @@ public:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
+	FCreatedRequestWidget OnCreatedRequestWidget;
 
 	// TODO move this somewhere appropriate
 	UFUNCTION(BlueprintCallable, Category = "Recipes")
@@ -37,9 +37,6 @@ public:
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
 	UFUNCTION()
 	void CompletedRequest(FRecipeData CompletedRequestData);
-
-	UFUNCTION(BlueprintCallable)
-	TArray<UActiveRecipeWidget*> const& GetActiveRequestWidgets() const { return ActiveRecipeWidgetArray; }
 	
 	UFUNCTION(BlueprintCallable)
 	UUserWidget* GetActiveRequestsHUDElement() const { return ActiveRequestsHUDElement; }
@@ -50,10 +47,7 @@ public:
 	UFUNCTION(Exec, Category = "Requests")
 	void DebugCompleteOldestRequest();
 protected:
-	// TODO change name to Request
-	UPROPERTY(BlueprintReadWrite, Category = "Requests")
-	TArray<UActiveRecipeWidget*> ActiveRecipeWidgetArray;
-
+	TArray<UActiveRecipeWidget*> ActiveRequestWidgetsArray;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Requests")
 	UUserWidget* ActiveRequestsHUDElement;

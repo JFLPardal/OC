@@ -15,6 +15,9 @@ class UWidgetAnimation;
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovedRequestWidgetFromHUD, FRecipeData, RecipeData);
 
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddedRequestWidgetToHUD, FRecipeData, RecipeData);
+
 /**
  * 
  */
@@ -35,6 +38,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FRemovedRequestWidgetFromHUD OnRemovedRequestWidgetFromHUD;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UVerticalBox* IngredientsList;

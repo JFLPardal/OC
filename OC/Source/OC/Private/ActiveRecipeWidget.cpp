@@ -27,6 +27,8 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
     }
     
     PlayAnimation(Show);
+
+    OnAddedRequestWidgetToHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::Completed()
