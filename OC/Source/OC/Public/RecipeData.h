@@ -24,7 +24,7 @@ public:
 
 	TArray<EIngredient> GetIngredients() const;
 
-	bool operator==(FRecipeData const& Recipe);
+	friend bool operator==(FRecipeData const& Recipe, FRecipeData const& AnotherRecipe);
 //private:
 	TStaticBitArray<16> RecipeIngredients;
 };

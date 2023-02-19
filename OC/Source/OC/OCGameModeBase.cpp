@@ -31,6 +31,11 @@ void AOCGameModeBase::BeginPlay()
 	UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("begin play"));
 }
 
+bool AOCGameModeBase::AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe) const
+{
+	return Recipe == OtherRecipe;
+}
+
 void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestData)
 {
 	if (ensureMsgf(ActiveRecipeWidgetBlueprint, TEXT("RecipeWidget not set in GameMode")))
@@ -40,8 +45,6 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 		if (ActiveRecipeWidget)
 		{
 			ActiveRecipeWidget->SetRecipeData(GeneratedRequestData);
-			
-			ActiveRecipeWidget->SetColorAndOpacity(FLinearColor::Gray);
 			ActiveRecipeWidget->AddToViewport();
 
 			int32 index = ActiveRecipeWidgetArray.Add(ActiveRecipeWidget);
@@ -66,7 +69,6 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 	{
 		ActiveRecipeWidgetArray[CompletedRequestIndex]->Completed();
 		ActiveRecipeWidgetArray.RemoveAt(CompletedRequestIndex);
-		//OnRemovedRequestWidgetFromHUD.Broadcast(CompletedRequestIndex);
 		
 		{ // debug
 			TArray<EIngredient> const CompletedIngredients = CompletedRequestData.GetIngredients();

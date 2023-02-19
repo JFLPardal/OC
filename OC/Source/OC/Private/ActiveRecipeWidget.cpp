@@ -46,7 +46,7 @@ void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation co
 
 void UActiveRecipeWidget::FinishedPlayingHideAnimation()
 {
-    UE_LOG(LogTemp, Warning, TEXT("finished playing hide animation"));
+    OnRemovedRequestWidgetFromHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::PlayAnimation(UWidgetAnimation* AnimationToPlay)
