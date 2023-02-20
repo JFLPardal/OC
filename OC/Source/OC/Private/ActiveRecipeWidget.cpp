@@ -48,7 +48,7 @@ void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation co
 
 void UActiveRecipeWidget::FinishedPlayingHideAnimation()
 {
-    OnRemovedRequestWidgetFromHUD.Broadcast(RecipeData);
+    OnFinishedHidingRequestOnHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::PlayAnimation(UWidgetAnimation* AnimationToPlay)

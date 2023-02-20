@@ -21,6 +21,8 @@ public:
 
 	bool CanAddIngrendient(EIngredient IngredientToAdd) const;
 	void AddIngredient(EIngredient IngredientToAdd);
+	
+	static bool AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe);
 
 	TArray<EIngredient> GetIngredients() const;
 

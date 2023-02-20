@@ -29,10 +29,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FCreatedRequestWidget OnCreatedRequestWidget;
 
-	// TODO move this somewhere appropriate
-	UFUNCTION(BlueprintCallable, Category = "Recipes")
-	bool AreRecipesTheSame( FRecipeData const& Recipe, FRecipeData const& OtherRecipe) const;
-
 	UFUNCTION()
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
 	UFUNCTION()

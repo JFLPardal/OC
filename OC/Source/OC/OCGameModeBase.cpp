@@ -1,5 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
-
+#pragma once
 
 #include "OCGameModeBase.h"
 
@@ -29,11 +29,6 @@ void AOCGameModeBase::BeginPlay()
 	}
 
 	UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("begin play"));
-}
-
-bool AOCGameModeBase::AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe) const
-{
-	return Recipe == OtherRecipe;
 }
 
 void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestData)

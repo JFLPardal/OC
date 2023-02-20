@@ -12,6 +12,11 @@ FRecipeData::FRecipeData(const FRecipeData& other)
     RecipeIngredients = other.RecipeIngredients;
 }
 
+bool FRecipeData::AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe)
+{
+    return Recipe == OtherRecipe;
+}
+
 bool operator==(FRecipeData const& Recipe, FRecipeData const& AnotherRecipe)
 {
     return Recipe.GetIngredients() == AnotherRecipe.GetIngredients();

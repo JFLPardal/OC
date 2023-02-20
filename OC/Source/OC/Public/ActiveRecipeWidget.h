@@ -36,10 +36,7 @@ public:
 
 	void Completed();
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FRemovedRequestWidgetFromHUD OnRemovedRequestWidgetFromHUD;
-
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FRemovedRequestWidgetFromHUD OnFinishedHidingRequestOnHUD;
 	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
