@@ -26,18 +26,16 @@ class OC_API UActiveRecipeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetRecipeData(FRecipeData Recipe);
-
-	UFUNCTION(BlueprintCallable)
-	FRecipeData GetRecipeData() const { return RecipeData; }
+	FRemovedRequestWidgetFromHUD OnFinishedHidingRequestOnHUD;
+	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
 
 	UFUNCTION(BlueprintCallable)
 	UUIIngredientSlotWidget* GetIngredientSlotWidget() { return IngredientSlotWidget; }
 
-	void Completed();
+	void SetRecipeData(FRecipeData Recipe);
+	FRecipeData GetRecipeData() const { return RecipeData; }
 
-	FRemovedRequestWidgetFromHUD OnFinishedHidingRequestOnHUD;
-	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
+	void Completed();
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UVerticalBox* IngredientsList;
