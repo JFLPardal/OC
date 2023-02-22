@@ -41,10 +41,10 @@ protected:
 	UVerticalBox* IngredientsList;
 
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
-	UWidgetAnimation* Show;
+	UWidgetAnimation* ShowAnimation;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnim), BlueprintReadOnly)
-	UWidgetAnimation* Hide;
+	UWidgetAnimation* CompletedAnimation;
 protected:
 	virtual void OnAnimationFinished_Implementation(UWidgetAnimation const* Animation) override;
 

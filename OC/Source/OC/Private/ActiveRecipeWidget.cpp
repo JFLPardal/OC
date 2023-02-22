@@ -26,21 +26,21 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
         }
     }
     
-    PlayAnimation(Show);
+    PlayAnimation(ShowAnimation);
 
     OnAddedRequestWidgetToHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::Completed()
 {
-    PlayAnimation(Hide);
+    PlayAnimation(CompletedAnimation);
 }
 
 void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation const* Animation)
 {
     Super::OnAnimationFinished_Implementation(Animation);
 
-    if (Animation == Hide)
+    if (Animation == CompletedAnimation)
     {
         FinishedPlayingHideAnimation();
     }
