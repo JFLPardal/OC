@@ -12,9 +12,14 @@ FRecipeData::FRecipeData(const FRecipeData& other)
     RecipeIngredients = other.RecipeIngredients;
 }
 
-bool FRecipeData::operator==(FRecipeData const& Recipe)
+bool FRecipeData::AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe)
 {
-    return this->GetIngredients() == Recipe.GetIngredients();
+    return Recipe == OtherRecipe;
+}
+
+bool operator==(FRecipeData const& Recipe, FRecipeData const& AnotherRecipe)
+{
+    return Recipe.GetIngredients() == AnotherRecipe.GetIngredients();
 }
 
 bool FRecipeData::CanAddIngrendient(EIngredient IngredientToAdd) const
@@ -54,14 +59,6 @@ TArray<EIngredient> FRecipeData::GetIngredients() const
             IngredientList.Add(static_cast<EIngredient>(Index));
         }
     }
-    /*for (int i = 0; i < RecipeIngredients.Num(); ++i)
-    {
-        const bool isIngredientInRecipe = RecipeIngredients[i];
-        if (isIngredientInRecipe)
-        {
-            IngredientList.Add(static_cast<EIngredient>(i));
-        }
-    }*/
 
     return IngredientList;
 }

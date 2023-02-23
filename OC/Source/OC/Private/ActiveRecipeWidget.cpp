@@ -26,19 +26,21 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
         }
     }
     
-    PlayAnimation(Show);
+    PlayAnimation(ShowAnimation);
+
+    OnAddedRequestWidgetToHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::Completed()
 {
-    PlayAnimation(Hide);
+    PlayAnimation(CompletedAnimation);
 }
 
 void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation const* Animation)
 {
     Super::OnAnimationFinished_Implementation(Animation);
 
-    if (Animation == Hide)
+    if (Animation == CompletedAnimation)
     {
         FinishedPlayingHideAnimation();
     }
@@ -46,7 +48,7 @@ void UActiveRecipeWidget::OnAnimationFinished_Implementation(UWidgetAnimation co
 
 void UActiveRecipeWidget::FinishedPlayingHideAnimation()
 {
-    UE_LOG(LogTemp, Warning, TEXT("finished playing hide animation"));
+    OnFinishedHidingRequestOnHUD.Broadcast(RecipeData);
 }
 
 void UActiveRecipeWidget::PlayAnimation(UWidgetAnimation* AnimationToPlay)

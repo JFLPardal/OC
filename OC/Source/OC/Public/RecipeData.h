@@ -21,10 +21,12 @@ public:
 
 	bool CanAddIngrendient(EIngredient IngredientToAdd) const;
 	void AddIngredient(EIngredient IngredientToAdd);
+	
+	static bool AreRecipesTheSame(FRecipeData const& Recipe, FRecipeData const& OtherRecipe);
 
 	TArray<EIngredient> GetIngredients() const;
 
-	bool operator==(FRecipeData const& Recipe);
+	friend bool operator==(FRecipeData const& Recipe, FRecipeData const& AnotherRecipe);
 //private:
 	TStaticBitArray<16> RecipeIngredients;
 };

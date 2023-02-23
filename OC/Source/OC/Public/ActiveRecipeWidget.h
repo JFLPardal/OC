@@ -12,6 +12,12 @@ class UUIIngredientSlotWidget;
 class UVerticalBox;
 class UWidgetAnimation;
 
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovedRequestWidgetFromHUD, FRecipeData, RecipeData);
+
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddedRequestWidgetToHUD, FRecipeData, RecipeData);
+
 /**
  * 
  */
@@ -20,11 +26,14 @@ class OC_API UActiveRecipeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetRecipeData(FRecipeData Recipe);
-	FRecipeData GetRecipeData() const { return RecipeData; }
+	FRemovedRequestWidgetFromHUD OnFinishedHidingRequestOnHUD;
+	FAddedRequestWidgetToHUD OnAddedRequestWidgetToHUD;
 
 	UFUNCTION(BlueprintCallable)
 	UUIIngredientSlotWidget* GetIngredientSlotWidget() { return IngredientSlotWidget; }
+
+	void SetRecipeData(FRecipeData Recipe);
+	FRecipeData GetRecipeData() const { return RecipeData; }
 
 	void Completed();
 protected:
@@ -32,10 +41,10 @@ protected:
 	UVerticalBox* IngredientsList;
 
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
-	UWidgetAnimation* Show;
+	UWidgetAnimation* ShowAnimation;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnim), BlueprintReadOnly)
-	UWidgetAnimation* Hide;
+	UWidgetAnimation* CompletedAnimation;
 protected:
 	virtual void OnAnimationFinished_Implementation(UWidgetAnimation const* Animation) override;
 

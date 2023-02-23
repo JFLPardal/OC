@@ -1,5 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
-
+#pragma once
 
 #include "OCGameModeBase.h"
 
@@ -40,12 +40,10 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 		if (ActiveRecipeWidget)
 		{
 			ActiveRecipeWidget->SetRecipeData(GeneratedRequestData);
-			
-			ActiveRecipeWidget->SetColorAndOpacity(FLinearColor::Gray);
 			ActiveRecipeWidget->AddToViewport();
 
-			int32 index = ActiveRecipeWidgetArray.Add(ActiveRecipeWidget);
-			OnAddedRequestWidgetToHUD.Broadcast(ActiveRecipeWidgetArray[index]);
+			int32 index = ActiveRequestWidgetsArray.Add(ActiveRecipeWidget);
+			OnCreatedRequestWidget.Broadcast(ActiveRequestWidgetsArray[index]);
 
 			TArray<EIngredient> const IngredientsOfNewRecipe = ActiveRecipeWidget->GetRecipeData().GetIngredients();
 
@@ -53,20 +51,19 @@ void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestDat
 				*UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[0]).ToString(),
 				IngredientsOfNewRecipe.IsValidIndex(1) ? *UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[1]).ToString() : TEXT(""),
 				IngredientsOfNewRecipe.IsValidIndex(2) ? *UEnum::GetDisplayValueAsText(IngredientsOfNewRecipe[2]).ToString() : TEXT(""),
-				ActiveRecipeWidgetArray.Num());
+				ActiveRequestWidgetsArray.Num());
 		}
 	}
 }
 
 void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 {	
-	int32 CompletedRequestIndex = ActiveRecipeWidgetArray.IndexOfByPredicate([&CompletedRequestData](UActiveRecipeWidget const *const RecipeWidget) {return RecipeWidget->GetRecipeData() == CompletedRequestData; });
+	int32 CompletedRequestIndex = ActiveRequestWidgetsArray.IndexOfByPredicate([&CompletedRequestData](UActiveRecipeWidget const *const RecipeWidget) {return RecipeWidget->GetRecipeData() == CompletedRequestData; });
 	
-	if (ActiveRecipeWidgetArray.IsValidIndex(CompletedRequestIndex))
+	if (ActiveRequestWidgetsArray.IsValidIndex(CompletedRequestIndex))
 	{
-		ActiveRecipeWidgetArray[CompletedRequestIndex]->Completed();
-		ActiveRecipeWidgetArray.RemoveAt(CompletedRequestIndex);
-		//OnRemovedRequestWidgetFromHUD.Broadcast(CompletedRequestIndex);
+		ActiveRequestWidgetsArray[CompletedRequestIndex]->Completed();
+		ActiveRequestWidgetsArray.RemoveAt(CompletedRequestIndex);
 		
 		{ // debug
 			TArray<EIngredient> const CompletedIngredients = CompletedRequestData.GetIngredients();
@@ -75,7 +72,7 @@ void AOCGameModeBase::CompletedRequest(FRecipeData CompletedRequestData)
 					*UEnum::GetDisplayValueAsText(CompletedIngredients[0]).ToString(),
 					CompletedIngredients.IsValidIndex(1) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[1]).ToString() : TEXT(""),
 					CompletedIngredients.IsValidIndex(2) ? *UEnum::GetDisplayValueAsText(CompletedIngredients[2]).ToString() : TEXT(""),
-					ActiveRecipeWidgetArray.Num());
+					ActiveRequestWidgetsArray.Num());
 		}
 	}
 }
@@ -105,6 +102,6 @@ void AOCGameModeBase::GrabDebugSnapshot(FVisualLogEntry* Snapshot) const
 	FVisualLogStatusCategory& PlaceableCategory = Snapshot->Status[CategoryIndex];
 	PlaceableCategory.Category = TEXT("AOCGameModeBase");
 
-	PlaceableCategory.Add(TEXT("NumberOfGeneratedRecipes"), FString::FromInt(ActiveRecipeWidgetArray.Num()));
+	PlaceableCategory.Add(TEXT("NumberOfGeneratedRecipes"), FString::FromInt(ActiveRequestWidgetsArray.Num()));
 }
 #endif
