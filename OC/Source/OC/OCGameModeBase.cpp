@@ -26,9 +26,30 @@ void AOCGameModeBase::BeginPlay()
 		}
 
 		ActiveRequestsHUDElement = CreateWidget(GetWorld(), ActiveRequestsHUDElementBlueprint);
+
+		SetLevelTimer();
 	}
 
 	UE_VLOG(this, TEXT("GameModeCategory"), Verbose, TEXT("begin play"));
+}
+
+void AOCGameModeBase::SetLevelTimer()
+{
+	TimerManager = &(GetWorld()->GetTimerManager());
+	if (ensureMsgf(TimerManager, TEXT("TimerManager in AOCGameModeBase not set")))
+	{
+		float const rate = 1.0f;
+		bool const shouldRepeat = true;
+
+		TimerManager->SetTimer(
+			TimerToFinishLevel,
+			this,
+			&AOCGameModeBase::DecreaseTimerRemainingInLevel,
+			rate,
+			shouldRepeat
+		);
+	}
+	
 }
 
 void AOCGameModeBase::GeneratedNewRequest(const FRecipeData& GeneratedRequestData)
@@ -91,6 +112,24 @@ void AOCGameModeBase::DebugGenerateNewRequest()
 	{
 		RequestsSubsystem->DebugGenerateNewRequest();
 	}
+}
+
+void AOCGameModeBase::DecreaseTimerRemainingInLevel()
+{
+	bool const IsTimeUp = --TimeRemainingInLevel <= 0.f && TimerManager->TimerExists(TimerToFinishLevel);
+	if (IsTimeUp)
+	{
+		if (TimerManager)
+		{
+			TimerManager->ClearTimer(TimerToFinishLevel);
+		}
+		FinishLevel();
+	}
+}
+
+void AOCGameModeBase::FinishLevel()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Knives Down!"));
 }
 
 #if ENABLE_VISUAL_LOG

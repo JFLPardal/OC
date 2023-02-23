@@ -55,7 +55,17 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Requests")
 	TSubclassOf<UUserWidget> ActiveRequestsHUDElementBlueprint;
+
+	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
+	float TimeRemainingInLevel = 10.f;
+	FTimerHandle TimerToFinishLevel;
+	FTimerManager* TimerManager;
 private:
+	UFUNCTION()
+	void DecreaseTimerRemainingInLevel();
+	void FinishLevel();
+	void SetLevelTimer();
+
 #if ENABLE_VISUAL_LOG
 	virtual void GrabDebugSnapshot(FVisualLogEntry* Snapshot) const override;
 #endif
