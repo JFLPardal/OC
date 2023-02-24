@@ -5,15 +5,12 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "Macros.h"
 #include "RequestsSubsystem.h"
 
 
-// Sets default values
 AInteractableActor::AInteractableActor()
 	:InteractableType(EInteractableType::Unspecified)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = BaseMesh;

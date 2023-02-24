@@ -36,17 +36,11 @@ bool FRecipeData::CanAddIngrendient(EIngredient IngredientToAdd) const
 
 void FRecipeData::AddIngredient(EIngredient IngredientToAdd)
 {
-    FString Ingredients = RecipeIngredients.ToString();
-    UE_LOG(LogTemp, Warning, TEXT("before adding ingredient %s"), *Ingredients);
-
     if(CanAddIngrendient(IngredientToAdd))
     {
         const auto IngredientPositionInArray = (uint8)IngredientToAdd;
         RecipeIngredients[IngredientPositionInArray] = true;
     }
-    
-    Ingredients = RecipeIngredients.ToString();
-    UE_LOG(LogTemp, Warning, TEXT("after adding ingredient %s"), *Ingredients);
 }
 
 TArray<EIngredient> FRecipeData::GetIngredients() const

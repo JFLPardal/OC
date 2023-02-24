@@ -53,12 +53,11 @@ FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractable
             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
             otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
             HeldPlate = Cast<APlate>(otherInteractable);
-            if(!HeldPlate)
+            if(ensureMsgf(HeldPlate, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel()))
             {
-                UE_LOG(LogTemp, Error, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel());
+                interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+                GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
             }
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
-            GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
         }
         else
         {

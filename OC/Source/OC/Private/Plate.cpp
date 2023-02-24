@@ -2,7 +2,6 @@
 
 
 #include "Plate.h"
-#include "Macros.h"  // delete this after test
 #include "Ingredient.h"
 
 APlate::APlate()

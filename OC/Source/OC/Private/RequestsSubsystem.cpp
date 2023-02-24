@@ -48,13 +48,8 @@ void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
                 for(AActor* deliveryConveyorActor : DeliveryConveyorActors )
                 {
                     Cast<ADeliveryConveyorActor>(deliveryConveyorActor)->OnPlateDelivered.AddDynamic(this, &URequestsSubsystem::CheckIfPlateHasActiveRecipe);
-                    DTOS("subscribed to CheckIfPlateHasActiveRecipe")
                 }
             }
-        }
-        else
-        {
-            DTOS("URequestsSubsystem::URequestsSubsystem - World not found")
         }
     }
 
@@ -95,14 +90,12 @@ void URequestsSubsystem::GenerateRecipe()
 
 void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
 {
-    DTOS("checking if plate has a matching recipe");
     if(ensureMsgf(Plate, TEXT("Plate passed as parameter for OnPlateDelivered event is a nullptr")))
     {
         auto RecipeData = Plate->GetRecipeData();
         OnCompletedRequest.Broadcast(RecipeData);
 
         FString PlateRecipe = RecipeData.RecipeIngredients.ToString();
-        UE_LOG(LogTemp, Warning, TEXT("Plate ingredients in Request %s"), *PlateRecipe);
 
         const auto PlateIngredients = RecipeData.RecipeIngredients;
 

@@ -39,15 +39,11 @@ FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AIntera
         const bool HasIngredientOnTop = SpawnedIngredient != nullptr;
         if(!HasIngredientOnTop)
         {
-            UE_LOG(LogTemp, Warning, TEXT("spawn ingredient"));
-
             SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
             SpawnedIngredient->SetIngredient(IngredientToSpawn);
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("attach ingredient to chracter"));
-
             interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
             interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
 
@@ -56,7 +52,6 @@ FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AIntera
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("Interacting with AIngredientSpawnerCrateActor while holding an interactable"));
         if(SpawnedIngredient && otherInteractable->GetInteractableType() ==  EInteractableType::Plate)
         {
             interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
