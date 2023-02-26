@@ -57,6 +57,8 @@ private:
 	TSubclassOf<UUserWidget> ActiveRequestsHUDElementBlueprint;
 
 	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
+	bool bShouldTimerExpiredFinishGame = false;
+	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
 	float TimeRemainingInLevel = 10.f;
 	FTimerHandle TimerToFinishLevel;
 	FTimerManager* TimerManager;

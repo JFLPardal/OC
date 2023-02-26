@@ -123,7 +123,10 @@ void AOCGameModeBase::DecreaseTimerRemainingInLevel()
 		{
 			TimerManager->ClearTimer(TimerToFinishLevel);
 		}
-		FinishLevel();
+		if (bShouldTimerExpiredFinishGame)
+		{
+			FinishLevel();
+		}
 	}
 }
 
