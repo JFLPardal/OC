@@ -4,8 +4,8 @@
 #include "OCGameModeBase.h"
 
 #include "ActiveRecipeWidget.h"
-//#include "Macros.h"
 #include "RequestsSubsystem.h"
+#include "UOCUWLevelTimerHUD.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
@@ -26,6 +26,12 @@ void AOCGameModeBase::BeginPlay()
 		}
 
 		ActiveRequestsHUDElement = CreateWidget(GetWorld(), ActiveRequestsHUDElementBlueprint);
+		
+		LevelTimerWidget = Cast<UUOCUWLevelTimerHUD>(CreateWidget(GetWorld(), LevelTimerWidgetBlueprint));
+		if (ensureMsgf(LevelTimerWidget, TEXT("Couldn't create LevelTimerWidget - make sure a UUOCUWLevelTimerHUD blueprint is assigned in the level's bp")))
+		{
+			LevelTimerWidget->AddToViewport();
+		}
 
 		SetLevelTimer();
 	}

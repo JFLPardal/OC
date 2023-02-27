@@ -13,7 +13,8 @@
  * 
  */
 
-class UActiveRecipeWidget;
+class UActiveRecipeWidgetUOCUWLevelTimerHUD;
+class UUOCUWLevelTimerHUD;
 class URequestsSubsystem;
 
 UDELEGATE(BlueprintCallable)
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Requests")
 	UUserWidget* ActiveRequestsHUDElement;
+
+	UPROPERTY(BlueprintReadWrite, Category = "LevelOverConditions")
+	UUOCUWLevelTimerHUD* LevelTimerWidget;
 private:
 	URequestsSubsystem* RequestsSubsystem;
 	
@@ -55,6 +59,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Requests")
 	TSubclassOf<UUserWidget> ActiveRequestsHUDElementBlueprint;
+
+	UPROPERTY(EditAnywhere, Category="LevelOverConditions")
+	TSubclassOf<UUOCUWLevelTimerHUD> LevelTimerWidgetBlueprint;
 
 	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
 	bool bShouldTimerExpiredFinishGame = false;
