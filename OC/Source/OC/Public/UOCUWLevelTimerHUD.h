@@ -6,9 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "UOCUWLevelTimerHUD.generated.h"
 
+class AOCGameModeBase;
 class UProgressBar;
 class UTextBlock;
-
 /**
  * 
  */
@@ -16,10 +16,20 @@ UCLASS()
 class OC_API UUOCUWLevelTimerHUD : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	void SetGameMode(AOCGameModeBase* GameMode);
+protected:
+	UFUNCTION()
+	void OnLevelTimerUpdated(float TimeRemainingInLevelInSecs);
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* TimeLeftProgressBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock * TimeLeftText;
+	UTextBlock* TimeRemainingInLevelText;
+
+	AOCGameModeBase* GameMode;
+private:
+	void UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs);
+	virtual void BeginDestroy() override;
 };

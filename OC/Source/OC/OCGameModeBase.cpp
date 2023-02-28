@@ -30,6 +30,7 @@ void AOCGameModeBase::BeginPlay()
 		LevelTimerWidget = Cast<UUOCUWLevelTimerHUD>(CreateWidget(GetWorld(), LevelTimerWidgetBlueprint));
 		if (ensureMsgf(LevelTimerWidget, TEXT("Couldn't create LevelTimerWidget - make sure a UUOCUWLevelTimerHUD blueprint is assigned in the level's bp")))
 		{
+			LevelTimerWidget->SetGameMode(this);
 			LevelTimerWidget->AddToViewport();
 		}
 
@@ -122,7 +123,9 @@ void AOCGameModeBase::DebugGenerateNewRequest()
 
 void AOCGameModeBase::DecreaseTimerRemainingInLevel()
 {
-	bool const IsTimeUp = --TimeRemainingInLevel <= 0.f && TimerManager->TimerExists(TimerToFinishLevel);
+	--TimeRemainingInLevelInSecs;
+	OnUpdatedTimeRemainingInLevel.Broadcast(TimeRemainingInLevelInSecs);
+	bool const IsTimeUp = TimeRemainingInLevelInSecs <= 0.f && TimerManager->TimerExists(TimerToFinishLevel);
 	if (IsTimeUp)
 	{
 		if (TimerManager)

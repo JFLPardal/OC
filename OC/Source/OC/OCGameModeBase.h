@@ -20,15 +20,22 @@ class URequestsSubsystem;
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreatedRequestWidget, UActiveRecipeWidget*, AddedWidget);
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdatedTimeRemainingInLevel, float, TimeRemainingInLevelInSecs);
+
 UCLASS()
 class OC_API AOCGameModeBase : public AGameModeBase, public IVisualLoggerDebugSnapshotInterface
 {
 	GENERATED_BODY()
 public:
 	virtual void BeginPlay() override;
+	float GetInitialTimeRemainingInLevelInSecs() const { return TimeRemainingInLevelInSecs; }
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FCreatedRequestWidget OnCreatedRequestWidget;
+
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FUpdatedTimeRemainingInLevel OnUpdatedTimeRemainingInLevel;
 
 	UFUNCTION()
 	void GeneratedNewRequest(const FRecipeData& GeneratedRequestData);
@@ -66,7 +73,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
 	bool bShouldTimerExpiredFinishGame = false;
 	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
-	float TimeRemainingInLevel = 10.f;
+	float TimeRemainingInLevelInSecs = 10.f;
 	FTimerHandle TimerToFinishLevel;
 	FTimerManager* TimerManager;
 private:
