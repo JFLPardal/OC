@@ -45,15 +45,15 @@ void AOCGameModeBase::SetLevelTimer()
 	TimerManager = &(GetWorld()->GetTimerManager());
 	if (ensureMsgf(TimerManager, TEXT("TimerManager in AOCGameModeBase not set")))
 	{
-		float const rate = 1.0f;
-		bool const shouldRepeat = true;
+		float const Rate = 1.0f;
+		bool const ShouldRepeat = true;
 
 		TimerManager->SetTimer(
 			TimerToFinishLevel,
 			this,
 			&AOCGameModeBase::DecreaseTimerRemainingInLevel,
-			rate,
-			shouldRepeat
+			Rate,
+			ShouldRepeat
 		);
 	}
 	

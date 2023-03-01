@@ -21,6 +21,8 @@ public:
 protected:
 	UFUNCTION()
 	void OnLevelTimerUpdated(float TimeRemainingInLevelInSecs);
+
+	virtual void BeginDestroy() override;
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* TimeLeftProgressBar;
@@ -31,5 +33,7 @@ protected:
 	AOCGameModeBase* GameMode;
 private:
 	void UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs);
-	virtual void BeginDestroy() override;
+	void UpdateTimeRemainingInLevelProgressBar(float TimeRemainingInLevelInSecs);
+private:
+	float InitialTimeRemainingInLevelInSecs;
 };

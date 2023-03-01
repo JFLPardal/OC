@@ -9,8 +9,9 @@
 void UUOCUWLevelTimerHUD::SetGameMode(AOCGameModeBase* GameModeToSet)
 {
 	GameMode = GameModeToSet;
-	float InitialTimeRemainingInLevelInSecs = GameMode->GetInitialTimeRemainingInLevelInSecs();
+	InitialTimeRemainingInLevelInSecs = GameMode->GetInitialTimeRemainingInLevelInSecs();
 	UpdateTimeRemainingInLevelText(InitialTimeRemainingInLevelInSecs);
+	UpdateTimeRemainingInLevelProgressBar(InitialTimeRemainingInLevelInSecs);
 
 	GameMode->OnUpdatedTimeRemainingInLevel.AddDynamic(this, &UUOCUWLevelTimerHUD::OnLevelTimerUpdated);
 }
@@ -23,10 +24,17 @@ void UUOCUWLevelTimerHUD::OnLevelTimerUpdated(float TimeRemainingInLevelInSecs)
 	//FDateTime TimeRemainingInSecs{ 1,1,1,0,0,Seconds,0 };
 
 	UpdateTimeRemainingInLevelText(TimeRemainingInLevelInSecs);
+	UpdateTimeRemainingInLevelProgressBar(TimeRemainingInLevelInSecs);
 }
 void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs)
 {
 	TimeRemainingInLevelText->SetText(FText::AsNumber(TimeRemainingInLevelInSecs));
+}
+
+void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelProgressBar(float TimeRemainingInLevelInSecs)
+{
+	float const TimeLeftAsPercentage = TimeRemainingInLevelInSecs / InitialTimeRemainingInLevelInSecs;
+	TimeLeftProgressBar->SetPercent(TimeLeftAsPercentage);
 }
 
 void UUOCUWLevelTimerHUD::BeginDestroy()
