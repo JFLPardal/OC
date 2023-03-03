@@ -9,6 +9,8 @@
 class AOCGameModeBase;
 class UProgressBar;
 class UTextBlock;
+class UWidgetAnimation;
+
 /**
  * 
  */
@@ -30,10 +32,22 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TimeRemainingInLevelText;
 
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* CriticalTimeRemainingImageAnimation;
+
 	AOCGameModeBase* GameMode;
+
+	UPROPERTY(EditAnywhere, Category = "TimeRemainingText")
+	float CriticalTimeThreshold = 10.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "TimeRemainingText")
+	FSlateColor CriticalTimeRemainingTextColor;
 private:
 	void UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs);
 	void UpdateTimeRemainingInLevelProgressBar(float TimeRemainingInLevelInSecs);
+	void UpdateAnimationsForIsTimeCritical();
+
+	bool IsTimeCritical(float TimeRemainingInLevelInSecs) const;
 private:
 	float InitialTimeRemainingInLevelInSecs;
 };

@@ -2,9 +2,11 @@
 
 
 #include "UOCUWLevelTimerHUD.h"
+
+#include "Animation/WidgetAnimation.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
-#include "OC\OCGameModeBase.h"
+#include "OC/OCGameModeBase.h"
 
 void UUOCUWLevelTimerHUD::SetGameMode(AOCGameModeBase* GameModeToSet)
 {
@@ -25,9 +27,21 @@ void UUOCUWLevelTimerHUD::OnLevelTimerUpdated(float TimeRemainingInLevelInSecs)
 
 	UpdateTimeRemainingInLevelText(TimeRemainingInLevelInSecs);
 	UpdateTimeRemainingInLevelProgressBar(TimeRemainingInLevelInSecs);
+
+	bool const isTimeCritical = IsTimeCritical(TimeRemainingInLevelInSecs);
+	if (isTimeCritical)
+	{
+		UpdateAnimationsForIsTimeCritical();
+	}
 }
 void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs)
 {
+	bool const isTimeCritical = IsTimeCritical(TimeRemainingInLevelInSecs);
+	if (isTimeCritical)
+	{
+		TimeRemainingInLevelText->SetColorAndOpacity(CriticalTimeRemainingTextColor);
+	}
+
 	TimeRemainingInLevelText->SetText(FText::AsNumber(TimeRemainingInLevelInSecs));
 }
 
@@ -35,6 +49,19 @@ void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelProgressBar(float TimeRemain
 {
 	float const TimeLeftAsPercentage = TimeRemainingInLevelInSecs / InitialTimeRemainingInLevelInSecs;
 	TimeLeftProgressBar->SetPercent(TimeLeftAsPercentage);
+}
+
+void UUOCUWLevelTimerHUD::UpdateAnimationsForIsTimeCritical()
+{
+	if (CriticalTimeRemainingImageAnimation)
+	{
+		PlayAnimation(CriticalTimeRemainingImageAnimation);
+	}
+}
+
+bool UUOCUWLevelTimerHUD::IsTimeCritical(float TimeRemainingInLevelInSecs) const
+{
+	return TimeRemainingInLevelInSecs <= CriticalTimeThreshold;
 }
 
 void UUOCUWLevelTimerHUD::BeginDestroy()
