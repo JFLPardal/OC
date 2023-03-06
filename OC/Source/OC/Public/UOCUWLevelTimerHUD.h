@@ -20,6 +20,8 @@ class OC_API UUOCUWLevelTimerHUD : public UUserWidget
 	GENERATED_BODY()
 public:
 	void SetGameMode(AOCGameModeBase* GameMode);
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 protected:
 	UFUNCTION()
 	void OnLevelTimerUpdated(float TimeRemainingInLevelInSecs);
@@ -42,6 +44,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "TimeRemainingText")
 	FSlateColor CriticalTimeRemainingTextColor;
+
+	UPROPERTY(EditAnywhere)
+	float ProgressBarLerpSpeed = .2f;
 private:
 	void UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs);
 	void UpdateTimeRemainingInLevelProgressBar(float TimeRemainingInLevelInSecs);
@@ -50,4 +55,5 @@ private:
 	bool IsTimeCritical(float TimeRemainingInLevelInSecs) const;
 private:
 	float InitialTimeRemainingInLevelInSecs;
+	float TargetTimeRemainingInLevelAsPercentage = 1.0f;
 };

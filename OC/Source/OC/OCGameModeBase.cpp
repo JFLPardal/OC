@@ -45,7 +45,7 @@ void AOCGameModeBase::SetLevelTimer()
 	TimerManager = &(GetWorld()->GetTimerManager());
 	if (ensureMsgf(TimerManager, TEXT("TimerManager in AOCGameModeBase not set")))
 	{
-		float const Rate = 1.0f;
+		float const Rate = SecondsBetweenTimerUpdate;
 		bool const ShouldRepeat = true;
 
 		TimerManager->SetTimer(
@@ -123,7 +123,7 @@ void AOCGameModeBase::DebugGenerateNewRequest()
 
 void AOCGameModeBase::DecreaseTimerRemainingInLevel()
 {
-	--TimeRemainingInLevelInSecs;
+	TimeRemainingInLevelInSecs -= SecondsBetweenTimerUpdate;
 	OnUpdatedTimeRemainingInLevel.Broadcast(TimeRemainingInLevelInSecs);
 	bool const IsTimeUp = TimeRemainingInLevelInSecs <= 0.f && TimerManager->TimerExists(TimerToFinishLevel);
 	if (IsTimeUp)

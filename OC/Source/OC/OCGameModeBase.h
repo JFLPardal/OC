@@ -58,6 +58,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "LevelOverConditions")
 	UUOCUWLevelTimerHUD* LevelTimerWidget;
+	
+	UPROPERTY(EditAnywhere, Category = "LevelOverConditions")
+	float SecondsBetweenTimerUpdate = 1.0f;
 private:
 	URequestsSubsystem* RequestsSubsystem;
 	

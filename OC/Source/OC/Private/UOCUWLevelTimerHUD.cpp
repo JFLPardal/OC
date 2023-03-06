@@ -12,12 +12,27 @@ void UUOCUWLevelTimerHUD::SetGameMode(AOCGameModeBase* GameModeToSet)
 {
 	GameMode = GameModeToSet;
 	InitialTimeRemainingInLevelInSecs = GameMode->GetInitialTimeRemainingInLevelInSecs();
+	TimeLeftProgressBar->SetPercent(1.0f);
 	UpdateTimeRemainingInLevelText(InitialTimeRemainingInLevelInSecs);
 	UpdateTimeRemainingInLevelProgressBar(InitialTimeRemainingInLevelInSecs);
 
 	GameMode->OnUpdatedTimeRemainingInLevel.AddDynamic(this, &UUOCUWLevelTimerHUD::OnLevelTimerUpdated);
 }
+PRAGMA_DISABLE_OPTIMIZATION
+void UUOCUWLevelTimerHUD::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+{
+	Super::Tick(MyGeometry, DeltaTime);
 
+	{ // update progress bar 
+		float const CurrentPercentage = TimeLeftProgressBar->Percent;
+		float const IntendedPercentage = TargetTimeRemainingInLevelAsPercentage;
+		float const LerpSpeed = ProgressBarLerpSpeed;
+		const float LerpValue = FMath::Lerp(CurrentPercentage, IntendedPercentage, LerpSpeed);
+
+		TimeLeftProgressBar->SetPercent(LerpValue);
+	}
+}
+PRAGMA_ENABLE_OPTIMIZATION
 void UUOCUWLevelTimerHUD::OnLevelTimerUpdated(float TimeRemainingInLevelInSecs)
 {
 	// investigate the usage of FDateTime and FTimeSpan
@@ -42,18 +57,19 @@ void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelText(float TimeRemainingInLe
 		TimeRemainingInLevelText->SetColorAndOpacity(CriticalTimeRemainingTextColor);
 	}
 
-	TimeRemainingInLevelText->SetText(FText::AsNumber(TimeRemainingInLevelInSecs));
+	int const TimeRemainingInLevelInSecsAsInt = static_cast<int>(FMath::Clamp(FMath::Floor(TimeRemainingInLevelInSecs), 0.0f, InitialTimeRemainingInLevelInSecs));
+	TimeRemainingInLevelText->SetText(FText::AsNumber(TimeRemainingInLevelInSecsAsInt));
 }
 
 void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelProgressBar(float TimeRemainingInLevelInSecs)
 {
-	float const TimeLeftAsPercentage = TimeRemainingInLevelInSecs / InitialTimeRemainingInLevelInSecs;
-	TimeLeftProgressBar->SetPercent(TimeLeftAsPercentage);
+	TargetTimeRemainingInLevelAsPercentage = TimeRemainingInLevelInSecs / InitialTimeRemainingInLevelInSecs;
 }
 
 void UUOCUWLevelTimerHUD::UpdateAnimationsForIsTimeCritical()
 {
-	if (CriticalTimeRemainingImageAnimation)
+	bool const IsPlayingCriticalTimeRemainingAnimation = IsAnimationPlaying(CriticalTimeRemainingImageAnimation);
+	if (CriticalTimeRemainingImageAnimation && !IsPlayingCriticalTimeRemainingAnimation)
 	{
 		PlayAnimation(CriticalTimeRemainingImageAnimation);
 	}
