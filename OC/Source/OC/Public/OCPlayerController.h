@@ -23,6 +23,7 @@ public:
 private:
 	void TryToInteract();
 	AInteractableActor* IsAnotherInteractableInRadius();
+	void AttachInteractable(AInteractableActor* ActorToAttach);
 	void DropInteractable();
 	void ResetAttachedInteractable();
 private:

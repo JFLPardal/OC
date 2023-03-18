@@ -9,6 +9,8 @@
 #include "Kismet\GameplayStatics.h"
 #include "GameFramework\Character.h"
 
+FString InteractableSocketIsNullptr = "Could not find USceneComponent named \"InteractableSocket\" in Player Actor";
+
 void AOCPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
@@ -27,7 +29,7 @@ void AOCPlayerController::SetupInputComponent()
         // TODO this is not a good way to do this as a lot of different components can be scene components on the actor.
         // Potentially create a SocketComponent, make InteractableSocket on BP_ControlableActor use that as its base class and update this
         InteractableSocket = Cast<USceneComponent>(PlayerCharacter->GetDefaultSubobjectByName(TEXT("InteractableSocket")));
-        ensureMsgf(InteractableSocket, TEXT("Could not find USceneComponent named \"InteractableSocket\" in Player Actor"));
+        ensureMsgf(InteractableSocket, TEXT("%s"), *InteractableSocketIsNullptr);
     }
 }
 
@@ -88,19 +90,8 @@ void AOCPlayerController::TryToInteract()
                     break;
                 case EInteractableInteractionOutcome::ShouldAttachToCharacter:
                 {
-                    if (InteractableSocket)
-                    {
-                        AttachedInteractable = InteractionOutcome.NewActorToInteractWith;
-
-                        EAttachmentRule LocationRule = EAttachmentRule::SnapToTarget;
-                        EAttachmentRule RotationRule = EAttachmentRule::KeepRelative;
-                        EAttachmentRule ScaleRule = EAttachmentRule::KeepWorld;
-                        bool const WieldSimulatedBodies = false;
-                        FAttachmentTransformRules const AttachmentRules{ LocationRule, RotationRule, ScaleRule, WieldSimulatedBodies };
-
-                        AttachedInteractable->AttachToComponent(InteractableSocket, AttachmentRules);
-                        break;
-                    }
+                    AttachInteractable(InteractionOutcome.NewActorToInteractWith);
+                    break;
                 }
                 case EInteractableInteractionOutcome::NoInteraction:
                 case EInteractableInteractionOutcome::InteractWithOtherInteractable:
@@ -113,19 +104,8 @@ void AOCPlayerController::TryToInteract()
             }
             case EInteractableInteractionOutcome::ShouldAttachToCharacter:
             {
-                if (InteractableSocket)
-                {
-                    AttachedInteractable = OverlappingInteractable;
-
-                    EAttachmentRule LocationRule = EAttachmentRule::SnapToTarget;
-                    EAttachmentRule RotationRule = EAttachmentRule::KeepRelative;
-                    EAttachmentRule ScaleRule = EAttachmentRule::KeepWorld;
-                    bool const WieldSimulatedBodies = false;
-                    FAttachmentTransformRules const AttachmentRules{ LocationRule, RotationRule, ScaleRule, WieldSimulatedBodies };
-
-                    AttachedInteractable->AttachToComponent(InteractableSocket, AttachmentRules);
-                    break;
-                }
+                AttachInteractable(OverlappingInteractable);
+                break;
             }
             case EInteractableInteractionOutcome::NoInteraction:
                 break;
@@ -157,6 +137,24 @@ AInteractableActor* AOCPlayerController::IsAnotherInteractableInRadius()
     }
 
     return OverlappingInteractable;
+}
+
+void AOCPlayerController::AttachInteractable(AInteractableActor* ActorToAttach)
+{
+    
+    if (ensureMsgf(InteractableSocket, TEXT("%s"), *InteractableSocketIsNullptr) && 
+        ensureMsgf(ActorToAttach, TEXT("Trying to attach a nullptr")))
+    {
+        AttachedInteractable = ActorToAttach;
+
+        EAttachmentRule LocationRule = EAttachmentRule::SnapToTarget;
+        EAttachmentRule RotationRule = EAttachmentRule::KeepRelative;
+        EAttachmentRule ScaleRule = EAttachmentRule::KeepWorld;
+        bool const WieldSimulatedBodies = false;
+        FAttachmentTransformRules const AttachmentRules{ LocationRule, RotationRule, ScaleRule, WieldSimulatedBodies };
+
+        AttachedInteractable->AttachToComponent(InteractableSocket, AttachmentRules);
+    }
 }
 
 void AOCPlayerController::DropInteractable()
