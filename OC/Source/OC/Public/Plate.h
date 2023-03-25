@@ -11,6 +11,9 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE_OneParam(FPlateCompositionChanged, AInteractableActor const* const /*NewPlateComposition*/);
+
 UCLASS()
 class OC_API APlate : public AInteractableActor
 {
@@ -20,6 +23,8 @@ public:
 	
 	void ClearPlate();
 	const FRecipeData& GetRecipeData() const;
+	
+	FPlateCompositionChanged OnPlateCompositionChanged;
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:

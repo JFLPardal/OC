@@ -28,7 +28,8 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
             {
                 CurrentRecipeData.AddIngredient(Ingredient);
                 HeldIngredient = otherInteractable;
-
+                OnPlateCompositionChanged.ExecuteIfBound(HeldIngredient);
+                
                 auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
                 if(MeshComponent)
                 {
@@ -64,6 +65,7 @@ void APlate::ClearPlate()
     {
         HeldIngredient->Destroy();
         HeldIngredient = nullptr;
+        OnPlateCompositionChanged.ExecuteIfBound(HeldIngredient);
     }
     CurrentRecipeData = FRecipeData{};
 }

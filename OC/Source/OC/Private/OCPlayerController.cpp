@@ -163,8 +163,18 @@ void AOCPlayerController::DropInteractable()
     {
         if (USceneComponent* RootComponentForAttachedInteractable = AttachedInteractable->GetRootComponent())
         {
+            EDetachmentRule LocationRule = EDetachmentRule::KeepWorld;
+            EDetachmentRule RotationRule = EDetachmentRule::KeepWorld;
+            EDetachmentRule ScaleRule = EDetachmentRule::KeepWorld;
             bool const bCallModify = true;
-            FDetachmentTransformRules DetachmentRules{ EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, bCallModify };
+
+            FDetachmentTransformRules DetachmentRules
+            (
+                LocationRule,
+                RotationRule,
+                ScaleRule,
+                bCallModify 
+            );
 
             RootComponentForAttachedInteractable->DetachFromComponent(DetachmentRules);
         }
