@@ -24,7 +24,7 @@ void UUOCUWLevelTimerHUD::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 	Super::Tick(MyGeometry, DeltaTime);
 
 	{ // update progress bar 
-		float const CurrentPercentage = TimeLeftProgressBar->Percent;
+		float const CurrentPercentage = TimeLeftProgressBar->GetPercent();
 		float const IntendedPercentage = TargetTimeRemainingInLevelAsPercentage;
 		float const LerpSpeed = ProgressBarLerpSpeed;
 		const float LerpValue = FMath::Lerp(CurrentPercentage, IntendedPercentage, LerpSpeed);
