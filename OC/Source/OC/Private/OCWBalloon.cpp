@@ -8,7 +8,7 @@ bool UOCWBalloon::Initialize()
 {
     Super::Initialize();
     
-    Hide();
+    //Hide();
 
     return true;
 }
