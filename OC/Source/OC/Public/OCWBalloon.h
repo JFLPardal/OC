@@ -10,7 +10,9 @@
  * 
  */
 
+class AInteractableActor;
 class UCanvasPanel;
+class UUniformGridPanel;
 
 UCLASS()
 class OC_API UOCWBalloon : public UUserWidget
@@ -21,10 +23,15 @@ public:
 
 	void Show();
 	void Hide();
+
+	void UpdateIngredientsWidget(AInteractableActor const* const NewPlateComposition);
 private:
 	// there seems to be a bug with changing the visibility of a widget directly from code at runtime, this is a workaround
-	UPROPERTY(meta=(BindWidget))
+	UPROPERTY(Transient, meta=(BindWidget))
 	UCanvasPanel* CanvasPanel = nullptr;
+
+	UPROPERTY(Transient, meta = (BindWidget))
+	TObjectPtr<UUniformGridPanel> Collection;
 private:
 	void SetCanvasVisibility(ESlateVisibility VisibilityToSet);
 };

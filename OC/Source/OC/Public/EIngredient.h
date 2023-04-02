@@ -16,3 +16,9 @@ enum class EIngredient : uint8
 	Beans 		UMETA(DisplayName="Beans"),
 	Invalid		UMETA(DisplayName="INVALID"),
 };
+
+namespace IngredientHelpers
+{
+	bool IsValid(EIngredient Ingredient);
+	FString ToString(EIngredient Ingredient);
+};

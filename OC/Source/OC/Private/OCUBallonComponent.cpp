@@ -18,7 +18,6 @@ void UOCUBallonComponent::BeginPlay()
 	{
 		Owner->OnPlateCompositionChanged.BindUObject(this, &UOCUBallonComponent::OnPlateCompositionChanged);
 	}
-
 }
 
 void UOCUBallonComponent::OnPlateCompositionChanged(AInteractableActor const * const NewPlateComposition)
@@ -33,8 +32,7 @@ void UOCUBallonComponent::OnPlateCompositionChanged(AInteractableActor const * c
 		else
 		{
 			BalloonWidget->Show();
-
-			// TODO add ingredient to the balloon
+			BalloonWidget->UpdateIngredientsWidget(NewPlateComposition);
 		}
 	}
 }
