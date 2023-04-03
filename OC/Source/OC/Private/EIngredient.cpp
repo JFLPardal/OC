@@ -3,12 +3,36 @@
 
 #include "EIngredient.h"
 
-bool IngredientHelpers::IsValid(EIngredient Ingredient)
+namespace IngredientHelpers
+{
+
+bool IsValid(EIngredient Ingredient)
 {
 	return Ingredient != EIngredient::Invalid;
 }
 
-FString IngredientHelpers::ToString(EIngredient Ingredient)
+FString ToString(EIngredient Ingredient)
 {
 	return UEnum::GetDisplayValueAsText(Ingredient).ToString();
+}
+
+FText* GetRepresentation(EIngredient Ingredient)
+{
+	FText* IngredientRepresentation = IngredientToRepresentation.Find(Ingredient);
+	if (!ensureMsgf(IngredientRepresentation, TEXT("No entry found in IngredientToRepresentation for ingredient - %s.\nDid you forget to add it?"), *ToString(Ingredient)))
+	{
+		IngredientRepresentation = IngredientToRepresentation.Find(EIngredient::Invalid);
+	}
+
+	return IngredientRepresentation;
+}
+
+TMap<EIngredient, FText> IngredientToRepresentation
+{
+	{ EIngredient::Tomato, FText::FromString("T") },
+	{ EIngredient::Lettuce, FText::FromString("L") },
+	{ EIngredient::Onion, FText::FromString("O") },
+	{ EIngredient::Beans, FText::FromString("B") },
+	{ EIngredient::Invalid, FText::FromString("-") },
+};
 }

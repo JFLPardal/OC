@@ -21,4 +21,5 @@ namespace IngredientHelpers
 {
 	bool IsValid(EIngredient Ingredient);
 	FString ToString(EIngredient Ingredient);
+	FText* GetRepresentation(EIngredient);
 };

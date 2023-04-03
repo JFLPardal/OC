@@ -3,6 +3,8 @@
 
 #include "OCUWIngredientBalloonContainer.h"
 
+#include "Components\TextBlock.h"
+
 bool UOCUWIngredientBalloonContainer::CanAssignIngredient()
 {
     bool const canAssign = !IngredientHelpers::IsValid(AssignedIngredient);
@@ -13,4 +15,6 @@ void UOCUWIngredientBalloonContainer::AssignIngredient(EIngredient Ingredient)
 {
     ensureMsgf(IngredientHelpers::IsValid(Ingredient), TEXT("Trying to assign 'EIngredient::Invalid' to Ingredient in UOCUWIngredientBalloonContainer"));
     AssignedIngredient = Ingredient;
+
+    Representation->SetText(*IngredientHelpers::GetRepresentation(AssignedIngredient));
 }

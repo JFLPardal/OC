@@ -10,6 +10,9 @@
 /**
  * 
  */
+
+class UTextBlock;
+
 UCLASS()
 class OC_API UOCUWIngredientBalloonContainer : public UUserWidget, public IIIngredientContainer
 {
@@ -17,6 +20,10 @@ class OC_API UOCUWIngredientBalloonContainer : public UUserWidget, public IIIngr
 public:
 	bool CanAssignIngredient() override;
 	void AssignIngredient(EIngredient Ingredient) override;
+protected:
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> Representation;
 private:
 	EIngredient AssignedIngredient = EIngredient::Invalid;
 };
