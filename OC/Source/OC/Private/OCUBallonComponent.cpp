@@ -28,6 +28,7 @@ void UOCUBallonComponent::OnPlateCompositionChanged(AInteractableActor const * c
 		if (ShouldHideBallon)
 		{
 			BalloonWidget->Hide();
+			BalloonWidget->Reset();
 		}
 		else
 		{

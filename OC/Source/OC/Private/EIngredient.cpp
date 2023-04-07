@@ -5,6 +5,14 @@
 
 namespace IngredientHelpers
 {
+TMap<EIngredient, FText> IngredientToRepresentation
+{
+	{ EIngredient::Tomato, FText::FromString("T") },
+	{ EIngredient::Lettuce, FText::FromString("L") },
+	{ EIngredient::Onion, FText::FromString("O") },
+	{ EIngredient::Beans, FText::FromString("B") },
+	{ EIngredient::Invalid, FText::FromString("-") },
+};
 
 bool IsValid(EIngredient Ingredient)
 {
@@ -26,13 +34,4 @@ FText* GetRepresentation(EIngredient Ingredient)
 
 	return IngredientRepresentation;
 }
-
-TMap<EIngredient, FText> IngredientToRepresentation
-{
-	{ EIngredient::Tomato, FText::FromString("T") },
-	{ EIngredient::Lettuce, FText::FromString("L") },
-	{ EIngredient::Onion, FText::FromString("O") },
-	{ EIngredient::Beans, FText::FromString("B") },
-	{ EIngredient::Invalid, FText::FromString("-") },
-};
 }

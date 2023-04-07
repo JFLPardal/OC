@@ -20,6 +20,7 @@ class OC_API UOCUWIngredientBalloonContainer : public UUserWidget, public IIIngr
 public:
 	bool CanAssignIngredient() override;
 	void AssignIngredient(EIngredient Ingredient) override;
+	void ClearAssignedIngredient() override;
 protected:
 	
 	UPROPERTY(meta=(BindWidget))

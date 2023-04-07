@@ -13,6 +13,7 @@
 class AInteractableActor;
 class UCanvasPanel;
 class UUniformGridPanel;
+class IIIngredientContainer;
 
 UCLASS()
 class OC_API UOCWBalloon : public UUserWidget
@@ -23,6 +24,7 @@ public:
 
 	void Show();
 	void Hide();
+	void Reset();
 
 	void UpdateIngredientsWidget(AInteractableActor const* const NewPlateComposition);
 private:
@@ -34,4 +36,6 @@ private:
 	TObjectPtr<UUniformGridPanel> Collection;
 private:
 	void SetCanvasVisibility(ESlateVisibility VisibilityToSet);
+	using IngredientContainerFn = std::function<bool/*should continue iteration*/(IIIngredientContainer* const)>;
+	void ForEachIngredientContainer(IngredientContainerFn Function);
 };

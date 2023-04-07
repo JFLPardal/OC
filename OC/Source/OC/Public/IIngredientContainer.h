@@ -25,4 +25,5 @@ class OC_API IIIngredientContainer
 public:
 	virtual bool CanAssignIngredient() = 0;
 	virtual void AssignIngredient(EIngredient Ingredient) = 0;
+	virtual void ClearAssignedIngredient() = 0;
 };

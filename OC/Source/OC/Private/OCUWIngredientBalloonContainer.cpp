@@ -15,6 +15,13 @@ void UOCUWIngredientBalloonContainer::AssignIngredient(EIngredient Ingredient)
 {
     ensureMsgf(IngredientHelpers::IsValid(Ingredient), TEXT("Trying to assign 'EIngredient::Invalid' to Ingredient in UOCUWIngredientBalloonContainer"));
     AssignedIngredient = Ingredient;
-
     Representation->SetText(*IngredientHelpers::GetRepresentation(AssignedIngredient));
+
+    SetVisibility(ESlateVisibility::Visible);
+}
+
+void UOCUWIngredientBalloonContainer::ClearAssignedIngredient()
+{
+    AssignedIngredient = EIngredient::Invalid;
+    SetVisibility(ESlateVisibility::Hidden);
 }
