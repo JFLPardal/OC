@@ -22,16 +22,14 @@ public:
 	APlate();
 	
 	void BeginPlay() override;
+
 	void ClearPlate();
 	const FRecipeData& GetRecipeData() const;
 	
 	FPlateCompositionChanged OnPlateCompositionChanged;
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
-private:
-	UPROPERTY(EditAnywhere)
-	USceneComponent* IngredientSocket;
-	
+private:	
 	UPROPERTY(EditAnywhere)
 	FName IngredientSocketName;
 

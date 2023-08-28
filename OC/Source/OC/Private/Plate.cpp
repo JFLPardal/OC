@@ -9,8 +9,6 @@ APlate::APlate()
     , CurrentRecipeData()
 {
     InteractableType = EInteractableType::Plate;
-
-    IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
 }
 
 void APlate::BeginPlay()
