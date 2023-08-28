@@ -21,6 +21,7 @@ class OC_API APlate : public AInteractableActor
 public:
 	APlate();
 	
+	void BeginPlay() override;
 	void ClearPlate();
 	const FRecipeData& GetRecipeData() const;
 	
@@ -31,6 +32,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* IngredientSocket;
 	
-	AInteractableActor* HeldIngredient;
+	UPROPERTY(EditAnywhere)
+	FName IngredientSocketName;
+
+	TArray<AInteractableActor*> HeldIngredients;
 	FRecipeData CurrentRecipeData;
 };
