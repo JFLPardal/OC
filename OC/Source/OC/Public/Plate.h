@@ -21,16 +21,18 @@ class OC_API APlate : public AInteractableActor
 public:
 	APlate();
 	
+	void BeginPlay() override;
+
 	void ClearPlate();
 	const FRecipeData& GetRecipeData() const;
+	bool IsEmpty() const;
 	
 	FPlateCompositionChanged OnPlateCompositionChanged;
-protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:
 	UPROPERTY(EditAnywhere)
-	USceneComponent* IngredientSocket;
-	
-	AInteractableActor* HeldIngredient;
+	FName IngredientSocketName;
+
+	TArray<AInteractableActor*> HeldIngredients;
 	FRecipeData CurrentRecipeData;
 };

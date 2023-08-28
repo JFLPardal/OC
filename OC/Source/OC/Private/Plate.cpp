@@ -9,9 +9,13 @@ APlate::APlate()
     , CurrentRecipeData()
 {
     InteractableType = EInteractableType::Plate;
+}
 
-    IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
-    HeldIngredient = nullptr;
+void APlate::BeginPlay()
+{
+    Super::BeginPlay();
+
+    ensureMsgf(!IngredientSocketName.IsNone(), TEXT("no ingredient socket name defined for plate"));
 }
 
 FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInteractable)
@@ -27,15 +31,20 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
             if(CurrentRecipeData.CanAddIngrendient(Ingredient))
             {
                 CurrentRecipeData.AddIngredient(Ingredient);
-                HeldIngredient = otherInteractable;
-                OnPlateCompositionChanged.ExecuteIfBound(HeldIngredient);
-                
-                auto MeshComponent = HeldIngredient->FindComponentByClass<UStaticMeshComponent>();
-                if(MeshComponent)
+                HeldIngredients.Add(otherInteractable);
+                if (AInteractableActor* AddedIngredient = HeldIngredients.Last())
                 {
-                    FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
-                    HeldIngredient->GetRootComponent()->AttachToComponent(IngredientSocket, attachmentRules);
-                    MeshComponent->SetGenerateOverlapEvents(false);
+                    OnPlateCompositionChanged.ExecuteIfBound(AddedIngredient);
+
+                    if(auto MeshComponent = AddedIngredient->FindComponentByClass<UStaticMeshComponent>())
+                    {
+                        if (auto PlateMesh = FindComponentByClass<UStaticMeshComponent>(); PlateMesh && !IngredientSocketName.IsNone())
+                        {
+                            FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
+                            AddedIngredient->GetRootComponent()->AttachToComponent(PlateMesh, attachmentRules, IngredientSocketName);
+                        }
+                        MeshComponent->SetGenerateOverlapEvents(false);
+                    }
                 }
                 
                 interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
@@ -59,13 +68,19 @@ const FRecipeData& APlate::GetRecipeData() const
     return CurrentRecipeData;
 }
 
+bool APlate::IsEmpty() const
+{
+    return HeldIngredients.IsEmpty();
+}
+
 void APlate::ClearPlate()
 {
-    if(HeldIngredient)
+    for(auto& HeldIngredient : HeldIngredients)
     {
         HeldIngredient->Destroy();
         HeldIngredient = nullptr;
         OnPlateCompositionChanged.ExecuteIfBound(HeldIngredient);
     }
+    HeldIngredients.Empty();
     CurrentRecipeData = FRecipeData{};
 }
