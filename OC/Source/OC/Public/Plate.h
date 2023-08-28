@@ -25,11 +25,11 @@ public:
 
 	void ClearPlate();
 	const FRecipeData& GetRecipeData() const;
+	bool IsEmpty() const;
 	
 	FPlateCompositionChanged OnPlateCompositionChanged;
-protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
-private:	
+private:
 	UPROPERTY(EditAnywhere)
 	FName IngredientSocketName;
 

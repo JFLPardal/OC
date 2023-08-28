@@ -68,6 +68,11 @@ const FRecipeData& APlate::GetRecipeData() const
     return CurrentRecipeData;
 }
 
+bool APlate::IsEmpty() const
+{
+    return HeldIngredients.IsEmpty();
+}
+
 void APlate::ClearPlate()
 {
     for(auto& HeldIngredient : HeldIngredients)
