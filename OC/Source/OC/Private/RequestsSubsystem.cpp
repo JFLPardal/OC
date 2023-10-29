@@ -69,7 +69,7 @@ void URequestsSubsystem::GenerateRecipe()
     int numberOfActiveRecipes = ActiveRecipes.Num();
     if(numberOfActiveRecipes < maxNumberOfSimultaneousActiveRecipes)    
     {
-        if (ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty")))
+        if (ensureMsgf(RecipesDataTable, TEXT("URequestsSubsystem - RecipedDataTable is empty - are you sure the path is correct?")))
         {
             TSharedPtr<FRecipeData> newRecipe = GetSharedPtrToRandomRecipeFromRecipeBook();
             ActiveRecipes.Add(newRecipe);

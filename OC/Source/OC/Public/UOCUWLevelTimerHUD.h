@@ -19,6 +19,7 @@ class OC_API UUOCUWLevelTimerHUD : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	virtual bool Initialize() override;
 	void SetGameMode(AOCGameModeBase* GameMode);
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -36,6 +37,7 @@ protected:
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* CriticalTimeRemainingImageAnimation;
+
 
 	AOCGameModeBase* GameMode;
 
