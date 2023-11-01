@@ -7,14 +7,9 @@
 #include "TimerManager.h"
 
 ADeliveryConveyorActor::ADeliveryConveyorActor()
-    :AInteractableActor()
+    :AStaticInteractableWithSocket()
 {
     InteractableType = EInteractableType::DeliveryConveyor;
-
-    PlateSocket = CreateDefaultSubobject<USceneComponent>(TEXT("PlateSocket"));
-    checkfSlow(PlateSocket, TEXT("PlateSocket not created for %s"), *GetActorLabel());
-    PlateSocket->SetupAttachment(RootComponent);
-    PlateSocket->SetRelativeLocation(FVector(.0f, .0f, 70.0f));
 }
 
 void ADeliveryConveyorActor::HideAndRespawnPlate()
@@ -51,7 +46,7 @@ FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractable
             }
 
             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
-            otherInteractable->AttachToComponent(PlateSocket, attachmentRules);
+            otherInteractable->AttachToComponent(Socket, attachmentRules);
             HeldPlate = Cast<APlate>(otherInteractable);
             if(ensureMsgf(HeldPlate, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel()))
             {

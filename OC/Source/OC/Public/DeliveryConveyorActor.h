@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractableActor.h"
+#include "StaticInteractableWithSocket.h"
 #include "DeliveryConveyorActor.generated.h"
 
 class APlate;
@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlateDelivered, APlate*, Plate);
  * 
  */
 UCLASS()
-class OC_API ADeliveryConveyorActor : public AInteractableActor
+class OC_API ADeliveryConveyorActor : public AStaticInteractableWithSocket
 {
 	GENERATED_BODY()
 public:
@@ -31,9 +31,6 @@ protected:
 	void HideAndRespawnPlate();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	USceneComponent* PlateSocket;
-
 	UPROPERTY(EditAnywhere, Category="Setup")
 	AActor* PlateRespawnLocation;
 

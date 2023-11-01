@@ -10,18 +10,13 @@
 FText GetTextForIngredient(EIngredient Ingredient);
 
 AIngredientSpawnerCrateActor::AIngredientSpawnerCrateActor()
-    : AInteractableActor()
+    : AStaticInteractableWithSocket()
     , SpawnedIngredient(nullptr)
 {
     InteractableType = EInteractableType::IngredientSpawnerCrate;
-
-    IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
     
     IngredientTextDisplayer = CreateDefaultSubobject<UTextRenderComponent>("IngredientTextDisplayer");
     //IngredientTextDisplayer->SetText(GetTextForIngredient(IngredientToSpawn));
-    
-    FVector SocketOffset{ 0.f, 0.f, 120.f };
-    IngredientSocket->SetRelativeLocation(SocketOffset);
 }
 
 void AIngredientSpawnerCrateActor::BeginPlay()
@@ -37,17 +32,17 @@ FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AIntera
     if(!otherInteractable)
     {
         const bool HasIngredientOnTop = SpawnedIngredient != nullptr;
-        if(!HasIngredientOnTop)
-        {
-            SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
-            SpawnedIngredient->SetIngredient(IngredientToSpawn);
-        }
-        else
+        if(HasIngredientOnTop)
         {
             interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
             interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
 
             SpawnedIngredient = nullptr;
+        }
+        else
+        {
+            SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, Socket->GetComponentLocation(), GetActorRotation());
+            SpawnedIngredient->SetIngredient(IngredientToSpawn);
         }
     }
     else
