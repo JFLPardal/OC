@@ -15,10 +15,63 @@ AIngredientProcessor::AIngredientProcessor()
 
 FInteractionOutcome AIngredientProcessor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-	FInteractionOutcome outcome { EInteractableInteractionOutcome::NoInteraction };
+	FInteractionOutcome interactionOutcome { EInteractableInteractionOutcome::NoInteraction };
 
+	if (CheckIfInteractableShouldDetachFromPlayerAndAttachToThis(interactionOutcome, otherInteractable))
+	{
+		return interactionOutcome;
+	}
+	
+	if (CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(interactionOutcome, otherInteractable))
+	{
+		return interactionOutcome;
+	}
 
-	return outcome;
+	return interactionOutcome;
+}
+
+bool AIngredientProcessor::CheckIfInteractableShouldDetachFromPlayerAndAttachToThis(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable)
+{
+	bool const interactableShouldDetachFromPlayerAndAttachToThis = otherInteractable && !InteractableInSocket && Socket;
+
+	if (interactableShouldDetachFromPlayerAndAttachToThis)
+	{
+		bool const WeldSimulatedBodies = false;
+		FAttachmentTransformRules attachmentRules(
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::KeepRelative,
+			EAttachmentRule::KeepWorld,
+			WeldSimulatedBodies);
+		otherInteractable->AttachToComponent(Socket, attachmentRules);
+
+		InteractableInSocket = otherInteractable;
+
+		interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+	}
+
+	return interactionOutcome.Outcome != EInteractableInteractionOutcome::NoInteraction;
+}
+
+bool AIngredientProcessor::CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable)
+{
+	bool const interactableShouldDetachFromThisAndAttachToPlayer = !otherInteractable && InteractableInSocket && Socket;
+	if (interactableShouldDetachFromThisAndAttachToPlayer)
+	{
+		bool const WeldSimulatedBodies = false;
+		FDetachmentTransformRules dettachmentRules(
+			EDetachmentRule::KeepWorld,
+			EDetachmentRule::KeepRelative,
+			EDetachmentRule::KeepWorld,
+			WeldSimulatedBodies);
+
+		interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
+		interactionOutcome.NewActorToInteractWith = InteractableInSocket;
+
+		InteractableInSocket->DetachFromActor(dettachmentRules);
+		InteractableInSocket = nullptr;
+	}
+
+	return interactionOutcome.Outcome != EInteractableInteractionOutcome::NoInteraction;
 }
 
 //// Called every frame

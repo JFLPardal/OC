@@ -17,6 +17,9 @@ public:
 
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
+private:
+	bool CheckIfInteractableShouldDetachFromPlayerAndAttachToThis(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
+	bool CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;

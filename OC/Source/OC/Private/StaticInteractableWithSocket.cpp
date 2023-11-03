@@ -5,6 +5,7 @@
 
 AStaticInteractableWithSocket::AStaticInteractableWithSocket()
     : AInteractableActor()
+    , InteractableInSocket(nullptr)
 {
     // socket setup
     {

@@ -20,4 +20,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Socket")
 	USceneComponent* Socket;
+
+	AInteractableActor* InteractableInSocket;
 };
