@@ -126,13 +126,13 @@ AInteractableActor* AOCPlayerController::IsAnotherInteractableInRadius()
         TArray<AActor*> OverlappingActors;
         TriggerVolume->GetOverlappingActors(OverlappingActors, AInteractableActor::StaticClass());
 
-        bool const IsHoldingInteractable = AttachedInteractable != nullptr;
-        // > 1 because the attached actor is at least overlapping with the player
-        int const indexToCheck = IsHoldingInteractable ? 1 : 0;
-        bool const IsAttachedInteractableOverlappingWithOtherActor = OverlappingActors.Num() > indexToCheck;
-        if (IsAttachedInteractableOverlappingWithOtherActor)
+        for (AActor*const OverlappingActor : OverlappingActors)
         {
-            OverlappingInteractable = Cast<AInteractableActor>(OverlappingActors[indexToCheck]);
+            if (AInteractableActor* TempOverlappingInteractable = Cast<AInteractableActor>(OverlappingActor); TempOverlappingInteractable->IsInteractionEnabled())
+            {
+                OverlappingInteractable = TempOverlappingInteractable;
+                break;
+            }
         }
     }
 
@@ -154,6 +154,8 @@ void AOCPlayerController::AttachInteractable(AInteractableActor* ActorToAttach)
         FAttachmentTransformRules const AttachmentRules{ LocationRule, RotationRule, ScaleRule, WieldSimulatedBodies };
 
         AttachedInteractable->AttachToComponent(InteractableSocket, AttachmentRules);
+
+        ActorToAttach->DisableInteraction();
     }
 }
 
@@ -177,6 +179,7 @@ void AOCPlayerController::DropInteractable()
             );
 
             RootComponentForAttachedInteractable->DetachFromComponent(DetachmentRules);
+            AttachedInteractable->EnableInteraction();
         }
     }
 

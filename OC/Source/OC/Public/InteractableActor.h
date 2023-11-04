@@ -24,6 +24,12 @@ enum class EInteractableInteractionOutcome : uint8
 	InteractWithOtherInteractable	UMETA(DisplayName="InteractWithOtherInteractable"),
 };
 
+enum class EInteractableState
+{
+	Enabled,
+	Disabled
+};
+
 USTRUCT(BlueprintType)
 struct FInteractionOutcome
 {
@@ -52,6 +58,11 @@ public:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 	EInteractableType GetInteractableType() const;
+	
+	void DisableInteraction();
+	void EnableInteraction();
+	bool IsInteractionEnabled() const;
+
 protected:
 	virtual void BeginPlay() override;
 protected:	
@@ -60,4 +71,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Interactable")
 	EInteractableType InteractableType;
+
+	EInteractableState InteractableState;
+
 };

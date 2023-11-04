@@ -9,7 +9,8 @@
 
 
 AInteractableActor::AInteractableActor()
-	:InteractableType(EInteractableType::Unspecified)
+	: InteractableType(EInteractableType::Unspecified)
+	, InteractableState(EInteractableState::Enabled)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
@@ -33,6 +34,22 @@ EInteractableType AInteractableActor::GetInteractableType() const
 {
 	return InteractableType;
 }
+
+void AInteractableActor::DisableInteraction()
+{
+	InteractableState = EInteractableState::Disabled;
+}
+
+void AInteractableActor::EnableInteraction()
+{
+	InteractableState = EInteractableState::Enabled;
+}
+
+bool AInteractableActor::IsInteractionEnabled() const
+{
+	return InteractableState == EInteractableState::Enabled;
+}
+
 
 void AInteractableActor::BeginPlay()
 {

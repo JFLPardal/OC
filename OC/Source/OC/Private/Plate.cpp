@@ -42,6 +42,7 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
                         {
                             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
                             AddedIngredient->GetRootComponent()->AttachToComponent(PlateMesh, attachmentRules, IngredientSocketName);
+                            AddedIngredient->DisableInteraction();
                         }
                         MeshComponent->SetGenerateOverlapEvents(false);
                     }
@@ -83,4 +84,6 @@ void APlate::ClearPlate()
     }
     HeldIngredients.Empty();
     CurrentRecipeData = FRecipeData{};
+
+    EnableInteraction();
 }

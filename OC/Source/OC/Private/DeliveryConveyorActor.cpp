@@ -48,6 +48,7 @@ FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractable
             FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
             otherInteractable->AttachToComponent(Socket, attachmentRules);
             HeldPlate = Cast<APlate>(otherInteractable);
+            HeldPlate->DisableInteraction();
             if(ensureMsgf(HeldPlate, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel()))
             {
                 interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
