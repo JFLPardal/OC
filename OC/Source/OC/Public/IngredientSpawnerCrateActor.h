@@ -35,6 +35,4 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Ingredient")
 	EIngredient IngredientToSpawn;
-
-	AIngredient* SpawnedIngredient;
 };

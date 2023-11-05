@@ -11,17 +11,9 @@ class OC_API AIngredientProcessor : public AStaticInteractableWithSocket
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
+public:
 	AIngredientProcessor();
-
-protected:
-	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
-private:
-	bool CheckIfInteractableShouldDetachFromPlayerAndAttachToThis(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
-	bool CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;
-
 };
