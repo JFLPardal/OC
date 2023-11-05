@@ -23,13 +23,13 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category="Events")
 	FPlateDelivered OnPlateDelivered;
-	
-	// pure virtual from parent class
-	FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 protected:
 	UFUNCTION()
 	void HideAndRespawnPlate();
 
+	void InteractWithPlate(AInteractableActor* const otherInteractable);
+private:
+	void SetSpecificInteractionCallbacks();
 protected:
 	UPROPERTY(EditAnywhere, Category="Setup")
 	AActor* PlateRespawnLocation;
@@ -38,5 +38,4 @@ protected:
 	float SecondsBeforePlateRespawn = 1.5f;
 private:
 	FTimerHandle hideAndRespawnPlate;
-	APlate* HeldPlate;
 };

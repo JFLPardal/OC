@@ -6,6 +6,17 @@
 #include "InteractableActor.h"
 #include "StaticInteractableWithSocket.generated.h"
 
+
+
+UENUM(BlueprintType)
+enum class EInteractableInteractionOptions : uint8
+{
+	CanOnlyAttach		UMETA(DisplayName = "CanOnlyAttach"),
+	CanOnlyDetach		UMETA(DisplayName = "CanOnlyDetach"),
+	CanAttachAndDetach	UMETA(DisplayName = "CanAttachAndDetach"),
+
+	Default = CanAttachAndDetach
+};
 /**
  * 
  */
@@ -18,8 +29,22 @@ public:
 
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 protected:
+	bool CanAttachInteractable() const;
+	bool CanDetachInteractable() const;
+
+	bool HasInteractableInSocket() const;
+private:
+	bool CheckIfInteractableShouldAttachToThisAndDetachFromPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
+	bool CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
+protected:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Socket")
 	USceneComponent* Socket;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Setup")
+	EInteractableInteractionOptions InteractionOptions;
+
 	AInteractableActor* InteractableInSocket;
+
+	using InteractableTypeToInteractionExecution = TMap<EInteractableType, std::function<void(AInteractableActor* const)>>;
+	InteractableTypeToInteractionExecution InteractableTypeToInteraction;
 };

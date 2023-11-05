@@ -7,13 +7,17 @@
 #include "TimerManager.h"
 
 ADeliveryConveyorActor::ADeliveryConveyorActor()
-    :AStaticInteractableWithSocket()
+    : AStaticInteractableWithSocket()
 {
+    InteractionOptions = EInteractableInteractionOptions::CanOnlyAttach;
     InteractableType = EInteractableType::DeliveryConveyor;
+
+    SetSpecificInteractionCallbacks();
 }
 
 void ADeliveryConveyorActor::HideAndRespawnPlate()
 {
+    APlate* HeldPlate = Cast<APlate>(InteractableInSocket);
     if(HeldPlate)
     {
         if(ensureMsgf(PlateRespawnLocation, TEXT("PlateRespawnLocation not set for %s"), *GetActorLabel()))
@@ -26,41 +30,37 @@ void ADeliveryConveyorActor::HideAndRespawnPlate()
             HeldPlate->ClearPlate();
             HeldPlate->SetActorLocation(PlateRespawnLocation->GetActorLocation());
             HeldPlate->DetachFromActor(dettachmentRules);
-            HeldPlate = nullptr;
+            InteractableInSocket = nullptr;
         }
     }
 }
 
-FInteractionOutcome ADeliveryConveyorActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
+void ADeliveryConveyorActor::InteractWithPlate(AInteractableActor* const otherInteractable)
 {
-    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
-    const bool characterIsHoldingSomething = otherInteractable != nullptr;
-
-    if(characterIsHoldingSomething)
+    APlate* Plate = Cast<APlate>(otherInteractable);
+    if (Plate)
     {
-        if(otherInteractable->GetInteractableType() == EInteractableType::Plate)
+        if (ensureMsgf(OnPlateDelivered.IsBound(), TEXT("OnPlateDelivered not bound")))
         {
-            if(ensureMsgf(OnPlateDelivered.IsBound(), TEXT("OnPlateDelivered not bound")))
-            {
-                OnPlateDelivered.Broadcast(Cast<APlate>(otherInteractable));
-            }
-
-            FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,EAttachmentRule::KeepWorld, false);
-            otherInteractable->AttachToComponent(Socket, attachmentRules);
-            HeldPlate = Cast<APlate>(otherInteractable);
-            HeldPlate->DisableInteraction();
-            if(ensureMsgf(HeldPlate, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel()))
-            {
-                interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
-                GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate ,.2f, false, SecondsBeforePlateRespawn);
-            }
+            OnPlateDelivered.Broadcast(Cast<APlate>(otherInteractable));
         }
-        else
+
+        Plate->DisableInteraction();
+        if (ensureMsgf(Plate, TEXT("[ADeliveryConveyorActor] - couldn't convert %s to APlate during interaction"), *otherInteractable->GetActorLabel()))
         {
-            UE_LOG(LogTemp, Warning, TEXT("Interacting with something for which interaction is unspecified"));
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::NoInteraction;
+            GetWorld()->GetTimerManager().SetTimer(hideAndRespawnPlate, this, &ADeliveryConveyorActor::HideAndRespawnPlate, .2f, false, SecondsBeforePlateRespawn);
         }
     }
+}
 
-    return interactionOutcome;
+void ADeliveryConveyorActor::SetSpecificInteractionCallbacks()
+{
+    auto PlateInteractionCallback = [this](AInteractableActor* const interactable)
+        {
+            if (this)
+            {
+                InteractWithPlate(interactable);
+            }
+        };
+    InteractableTypeToInteraction.Emplace(EInteractableType::Plate, PlateInteractionCallback);
 }

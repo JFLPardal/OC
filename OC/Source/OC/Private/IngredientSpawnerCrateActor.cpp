@@ -11,7 +11,6 @@ FText GetTextForIngredient(EIngredient Ingredient);
 
 AIngredientSpawnerCrateActor::AIngredientSpawnerCrateActor()
     : AStaticInteractableWithSocket()
-    , SpawnedIngredient(nullptr)
 {
     InteractableType = EInteractableType::IngredientSpawnerCrate;
     
@@ -28,33 +27,21 @@ void AIngredientSpawnerCrateActor::BeginPlay()
 
 FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
-    if(!otherInteractable)
+    FInteractionOutcome interactionOutcome = Super::AttemptInteractionWith(otherInteractable);
+    
+    if(interactionOutcome.Outcome == EInteractableInteractionOutcome::NoInteraction)
     {
-        const bool HasIngredientOnTop = SpawnedIngredient != nullptr;
-        if(HasIngredientOnTop)
+        if(!otherInteractable)
         {
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
-            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
-
-            SpawnedIngredient = nullptr;
-        }
-        else
-        {
-            SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, Socket->GetComponentLocation(), GetActorRotation());
-            SpawnedIngredient->SetIngredient(IngredientToSpawn);
+            if(!HasInteractableInSocket())
+            {
+                AIngredient* const SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, Socket->GetComponentLocation(), GetActorRotation());
+                SpawnedIngredient->SetIngredient(IngredientToSpawn);
+                InteractableInSocket = SpawnedIngredient;
+            }
         }
     }
-    else
-    {
-        if(SpawnedIngredient && otherInteractable->GetInteractableType() ==  EInteractableType::Plate)
-        {
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
-            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
 
-            SpawnedIngredient = nullptr;
-        }
-    }
     return interactionOutcome;
 }
 
