@@ -48,6 +48,15 @@ void AOCPlayerController::TryToInteract()
             case EInteractableInteractionOutcome::ShouldDetachFromCharacter:
                 ResetAttachedInteractable();
                 break;
+            case EInteractableInteractionOutcome::InteractWithInteractableInSocket:
+            {
+                FInteractionOutcome InteractionOutcomeWithInteractableInSocket = InteractionOutcome.NewActorToInteractWith->AttemptInteractionWith(AttachedInteractable);
+                if (InteractionOutcomeWithInteractableInSocket.Outcome == EInteractableInteractionOutcome::ShouldDetachFromCharacter)
+                {
+                    DropInteractable();
+                }
+                break;
+            }
             case EInteractableInteractionOutcome::InteractWithOtherInteractable:
                 OverlappingInteractable->AttemptInteractionWith(AttachedInteractable);
                 break;

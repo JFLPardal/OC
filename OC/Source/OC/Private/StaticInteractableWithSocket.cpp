@@ -31,12 +31,21 @@ FInteractionOutcome AStaticInteractableWithSocket::AttemptInteractionWith(AInter
 		return interactionOutcome;
 	}
 
+	if (CheckIfInteractableShouldAttachToInteractableInSocketAndDetachFromPlayer(interactionOutcome, otherInteractable))
+	{
+		return interactionOutcome;
+	}
+
     return interactionOutcome;
 }
 
 bool AStaticInteractableWithSocket::CheckIfInteractableShouldAttachToThisAndDetachFromPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable)
 {
-	bool interactableShouldAttachToThisAndDetachFromPlayer = CanAttachInteractable() && otherInteractable && !InteractableInSocket && Socket;
+	bool interactableShouldAttachToThisAndDetachFromPlayer = 
+		CanAttachInteractable() && 
+		otherInteractable && 
+		!InteractableInSocket && 
+		Socket;
 
 	if (interactableShouldAttachToThisAndDetachFromPlayer)
 	{
@@ -75,7 +84,12 @@ bool AStaticInteractableWithSocket::CheckIfInteractableShouldAttachToThisAndDeta
 
 bool AStaticInteractableWithSocket::CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable)
 {
-	bool const interactableShouldDetachFromThisAndAttachToPlayer = CanDetachInteractable() && !otherInteractable && InteractableInSocket && Socket;
+	bool const interactableShouldDetachFromThisAndAttachToPlayer = 
+		CanDetachInteractable() && 
+		!otherInteractable &&
+		InteractableInSocket && 
+		Socket;
+
 	if (interactableShouldDetachFromThisAndAttachToPlayer)
 	{
 		bool const WeldSimulatedBodies = false;
@@ -90,6 +104,25 @@ bool AStaticInteractableWithSocket::CheckIfInteractableShouldDetachFromThisAndAt
 
 		InteractableInSocket->DetachFromActor(dettachmentRules);
 		InteractableInSocket = nullptr;
+	}
+
+	return interactionOutcome.Outcome != EInteractableInteractionOutcome::NoInteraction;
+}
+
+bool AStaticInteractableWithSocket::CheckIfInteractableShouldAttachToInteractableInSocketAndDetachFromPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable)
+{
+	if (otherInteractable && InteractableInSocket)
+	{
+		bool const interactableAttachedToPlayerCanAttachToInteractableInSocket = AInteractableActor::CanAttachToInteractable(otherInteractable->GetInteractableType(), InteractableInSocket->GetInteractableType());
+		bool const interactableShouldAttachToInteractableInSocketAndDetachFromPlayer =
+			interactableAttachedToPlayerCanAttachToInteractableInSocket &&
+			CanAttachInteractable();
+
+		if (interactableShouldAttachToInteractableInSocketAndDetachFromPlayer)
+		{
+			interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithInteractableInSocket;
+			interactionOutcome.NewActorToInteractWith = InteractableInSocket;
+		}
 	}
 
 	return interactionOutcome.Outcome != EInteractableInteractionOutcome::NoInteraction;

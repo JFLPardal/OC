@@ -5,8 +5,12 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "RequestsSubsystem.h"
 
+using InteractableTypesAttachmentMap = std::unordered_map<EInteractableType, std::unordered_set<EInteractableType>>;
+InteractableTypesAttachmentMap AInteractableActor::s_InteractableTypesAttachmentMap
+{
+	{EInteractableType::Ingredient, std::unordered_set<EInteractableType>{EInteractableType::Plate}}
+};
 
 AInteractableActor::AInteractableActor()
 	: InteractableType(EInteractableType::Unspecified)
@@ -48,6 +52,22 @@ void AInteractableActor::EnableInteraction()
 bool AInteractableActor::IsInteractionEnabled() const
 {
 	return InteractableState == EInteractableState::Enabled;
+}
+
+bool AInteractableActor::CanAttachToInteractable(EInteractableType interactableToBeAttached, EInteractableType interactableToAttachTo)
+{
+	bool canAttach = false;
+
+	auto interactableToBeAttachedPossibleAttachmentsIt = s_InteractableTypesAttachmentMap.find(interactableToBeAttached);
+	if (interactableToBeAttachedPossibleAttachmentsIt != s_InteractableTypesAttachmentMap.cend())
+	{
+		auto interactableToBeAttachedPossibleAttachments = interactableToBeAttachedPossibleAttachmentsIt->second;
+		auto interactableToAttachToIt = interactableToBeAttachedPossibleAttachments.find(interactableToAttachTo);
+
+		canAttach = interactableToAttachToIt != interactableToBeAttachedPossibleAttachments.cend();
+	}
+
+	return canAttach;
 }
 
 

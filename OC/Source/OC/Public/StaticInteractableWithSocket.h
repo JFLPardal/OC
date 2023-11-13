@@ -36,6 +36,7 @@ protected:
 private:
 	bool CheckIfInteractableShouldAttachToThisAndDetachFromPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
 	bool CheckIfInteractableShouldDetachFromThisAndAttachToPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
+	bool CheckIfInteractableShouldAttachToInteractableInSocketAndDetachFromPlayer(FInteractionOutcome& interactionOutcome, AInteractableActor* const otherInteractable);
 protected:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Socket")
 	USceneComponent* Socket;
