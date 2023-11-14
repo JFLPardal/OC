@@ -13,6 +13,22 @@ AIngredientProcessor::AIngredientProcessor()
 	InteractableType = EInteractableType::IngredientProcessor;
 }
 
+
+EUsageOutcome AIngredientProcessor::AttemptUse()
+{
+	EUsageOutcome outcome{ EUsageOutcome::FailedToUse };
+	if (CanUse())
+	{
+		outcome = EUsageOutcome::NotFullyProcessed;
+	}
+	return outcome;
+}
+
+bool AIngredientProcessor::CanUse() const
+{
+	return HasInteractableInSocket();
+}
+
 //// Called every frame
 //void AIngredientProcessor::Tick(float DeltaTime)
 //{

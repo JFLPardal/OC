@@ -8,6 +8,7 @@
 #include "Components\SphereComponent.h"
 #include "Kismet\GameplayStatics.h"
 #include "GameFramework\Character.h"
+#include "Usable.h"
 
 FString InteractableSocketIsNullptr = "Could not find USceneComponent named \"InteractableSocket\" in Player Actor";
 
@@ -18,6 +19,7 @@ void AOCPlayerController::SetupInputComponent()
     if (ensureMsgf(InputComponent, TEXT("Could not find InputComponent in Player Actor")))
     {
         InputComponent->BindAction("Interact", EInputEvent::IE_Pressed, this, &AOCPlayerController::TryToInteract);
+        InputComponent->BindAction("Use", EInputEvent::IE_Pressed, this, &AOCPlayerController::TryToUse);
     }
     
     AActor* PlayerCharacter = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
@@ -126,6 +128,34 @@ void AOCPlayerController::TryToInteract()
     }
 }
 
+void AOCPlayerController::TryToUse()
+{
+    bool const IsHoldingInteractable = AttachedInteractable != nullptr;
+    if (!IsHoldingInteractable)
+    {
+        if (IUsable* UsableInRadius = IsUsableInRadius())
+        {
+            EUsageOutcome UsageOutcome = UsableInRadius->AttemptUse();
+
+            switch (UsageOutcome)
+            {
+            case EUsageOutcome::FullyProcessed:
+                UE_LOG(LogTemp, Error, TEXT("Fully processed"));
+                break;
+            case EUsageOutcome::NotFullyProcessed:
+                UE_LOG(LogTemp, Error, TEXT("Not fully processed"));
+                break;
+            case EUsageOutcome::FailedToUse:
+                UE_LOG(LogTemp, Error, TEXT("Failed to use"));
+                break;
+            default:
+                UE_LOG(LogTemp, Error, TEXT("No usage outcome defined for type %s"), UsageOutcome);
+                break;
+            }
+        }
+    }
+}
+
 AInteractableActor* AOCPlayerController::IsAnotherInteractableInRadius()
 {
     AInteractableActor* OverlappingInteractable = nullptr;
@@ -146,6 +176,28 @@ AInteractableActor* AOCPlayerController::IsAnotherInteractableInRadius()
     }
 
     return OverlappingInteractable;
+}
+
+IUsable* AOCPlayerController::IsUsableInRadius()
+{
+    IUsable* UsableInRadius = nullptr;
+
+    if (TriggerVolume)
+    {
+        TArray<AActor*> OverlappingActors;
+        TriggerVolume->GetOverlappingActors(OverlappingActors, AInteractableActor::StaticClass());
+
+        for (AActor* const OverlappingActor : OverlappingActors)
+        {
+            if (IUsable* TempOverlappingUsable = Cast<IUsable>(OverlappingActor))
+            {
+                UsableInRadius = TempOverlappingUsable;
+                break;
+            }
+        }
+    }
+
+    return UsableInRadius;
 }
 
 void AOCPlayerController::AttachInteractable(AInteractableActor* ActorToAttach)
