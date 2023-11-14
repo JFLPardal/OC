@@ -53,7 +53,7 @@ void AOCPlayerController::TryToInteract()
                 FInteractionOutcome InteractionOutcomeWithInteractableInSocket = InteractionOutcome.NewActorToInteractWith->AttemptInteractionWith(AttachedInteractable);
                 if (InteractionOutcomeWithInteractableInSocket.Outcome == EInteractableInteractionOutcome::ShouldDetachFromCharacter)
                 {
-                    DropInteractable();
+                    ResetAttachedInteractable();
                 }
                 break;
             }
