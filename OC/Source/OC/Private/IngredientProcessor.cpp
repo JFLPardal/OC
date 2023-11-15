@@ -3,35 +3,41 @@
 
 #include "IngredientProcessor.h"
 
-// Sets default values
+#include "Processable.h"
+
 AIngredientProcessor::AIngredientProcessor()
 	:AStaticInteractableWithSocket()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = true;
-
 	InteractableType = EInteractableType::IngredientProcessor;
 }
 
-
-EUsageOutcome AIngredientProcessor::AttemptUse()
+EUsageOutcome AIngredientProcessor::TryToUse()
 {
-	EUsageOutcome outcome{ EUsageOutcome::FailedToUse };
+	EUsageOutcome Outcome{ EUsageOutcome::FailedToUse };
 	if (CanUse())
 	{
-		outcome = EUsageOutcome::NotFullyProcessed;
+		IProcessable* Processable = Cast<IProcessable>(InteractableInSocket);
+		Processable->Process();
+		EProcessableState ProcessableState = Processable->GetState();
+
+		switch (ProcessableState)
+		{
+		case EProcessableState::NotProcessed:
+		case EProcessableState::PartiallyProcessed:
+			Outcome = EUsageOutcome::NotFullyProcessed;
+			break;
+		case EProcessableState::FullyProcessed:
+			Outcome = EUsageOutcome::FullyProcessed;
+			break;
+		default:
+			UE_LOG(LogTemp, Error, TEXT("No usage outcome defined for EProcessableState %s"), ProcessableState);
+			break;
+		}
 	}
-	return outcome;
+	return Outcome;
 }
 
 bool AIngredientProcessor::CanUse() const
 {
-	return HasInteractableInSocket();
+	return HasInteractableInSocket() && Cast<IProcessable>(InteractableInSocket); 
 }
-
-//// Called every frame
-//void AIngredientProcessor::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}

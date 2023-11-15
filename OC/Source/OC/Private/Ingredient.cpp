@@ -5,7 +5,8 @@
 
 // Sets default values
 AIngredient::AIngredient()
-    :AInteractableActor()
+    : AInteractableActor()
+    , ProcessableState(EProcessableState::Default)
 {
 	InteractableType = EInteractableType::Ingredient;
 	Ingredient = EIngredient::Tomato;
@@ -18,6 +19,21 @@ EIngredient AIngredient::GetIngredient() const
 void AIngredient::SetIngredient(EIngredient IngredientToSet)
 {
     Ingredient = IngredientToSet;
+}
+
+EProcessableState AIngredient::GetState() const
+{
+    return ProcessableState;
+}
+
+void AIngredient::Process()
+{
+    ProcessableState = EProcessableState::FullyProcessed;
+
+    if (ProcessableState == EProcessableState::FullyProcessed)
+    {
+        SetActorScale3D(FVector(GetActorScale3D() * relativeScaleForProcessedIngredient));
+    }
 }
 
 FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+
 #include "Usable.generated.h"
 
 
@@ -33,6 +34,6 @@ class OC_API IUsable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual bool CanUse() const = 0;
-	virtual EUsageOutcome AttemptUse() = 0;
+	virtual EUsageOutcome TryToUse() = 0;
 
 };

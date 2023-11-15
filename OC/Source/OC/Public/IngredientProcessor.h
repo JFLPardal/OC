@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "StaticInteractableWithSocket.h"
 #include "Usable.h"
+
 #include "IngredientProcessor.generated.h"
 
 UCLASS()
@@ -15,9 +16,6 @@ class OC_API AIngredientProcessor : public AStaticInteractableWithSocket, public
 public:
 	AIngredientProcessor();
 
-	virtual EUsageOutcome AttemptUse() override;
+	virtual EUsageOutcome TryToUse() override;
 	virtual bool CanUse() const override;
-public:	
-	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
 };

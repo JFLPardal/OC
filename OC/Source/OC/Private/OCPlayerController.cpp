@@ -135,7 +135,7 @@ void AOCPlayerController::TryToUse()
     {
         if (IUsable* UsableInRadius = IsUsableInRadius())
         {
-            EUsageOutcome UsageOutcome = UsableInRadius->AttemptUse();
+            EUsageOutcome UsageOutcome = UsableInRadius->TryToUse();
 
             switch (UsageOutcome)
             {
