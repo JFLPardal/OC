@@ -8,6 +8,13 @@
 #include "Components/ProgressBar.h"
 #include "OC/OCGameModeBase.h"
 
+bool UUOCUWLevelTimerHUD::Initialize()
+{
+	bool const initialized = Super::Initialize();
+
+	return initialized;
+}
+
 void UUOCUWLevelTimerHUD::SetGameMode(AOCGameModeBase* GameModeToSet)
 {
 	GameMode = GameModeToSet;
@@ -18,10 +25,10 @@ void UUOCUWLevelTimerHUD::SetGameMode(AOCGameModeBase* GameModeToSet)
 
 	GameMode->OnUpdatedTimeRemainingInLevel.AddDynamic(this, &UUOCUWLevelTimerHUD::OnLevelTimerUpdated);
 }
-PRAGMA_DISABLE_OPTIMIZATION
+
 void UUOCUWLevelTimerHUD::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
-	Super::Tick(MyGeometry, DeltaTime);
+	Super::NativeTick(MyGeometry, DeltaTime);
 
 	{ // update progress bar 
 		float const CurrentPercentage = TimeLeftProgressBar->GetPercent();
@@ -30,9 +37,14 @@ void UUOCUWLevelTimerHUD::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 		const float LerpValue = FMath::Lerp(CurrentPercentage, IntendedPercentage, LerpSpeed);
 
 		TimeLeftProgressBar->SetPercent(LerpValue);
+		bool const IsPlayingCriticalTimeRemainingAnimation = IsAnimationPlaying(CriticalTimeRemainingImageAnimation);
+		if (IsPlayingCriticalTimeRemainingAnimation && LerpValue < .01f)
+		{
+			StopAnimation(CriticalTimeRemainingImageAnimation);
+		}
 	}
 }
-PRAGMA_ENABLE_OPTIMIZATION
+
 void UUOCUWLevelTimerHUD::OnLevelTimerUpdated(float TimeRemainingInLevelInSecs)
 {
 	// investigate the usage of FDateTime and FTimeSpan
@@ -71,7 +83,7 @@ void UUOCUWLevelTimerHUD::UpdateAnimationsForIsTimeCritical()
 	bool const IsPlayingCriticalTimeRemainingAnimation = IsAnimationPlaying(CriticalTimeRemainingImageAnimation);
 	if (CriticalTimeRemainingImageAnimation && !IsPlayingCriticalTimeRemainingAnimation)
 	{
-		PlayAnimation(CriticalTimeRemainingImageAnimation);
+		PlayAnimation(CriticalTimeRemainingImageAnimation, 0.0f, 0, EUMGSequencePlayMode::Type::Forward, 1, true);
 	}
 }
 

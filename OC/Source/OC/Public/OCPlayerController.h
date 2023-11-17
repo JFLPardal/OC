@@ -9,6 +9,7 @@
 class AInteractableActor;
 class USphereComponent;
 class USceneComponent;
+class IUsable;
 
 /**
  * 
@@ -26,6 +27,9 @@ private:
 	void AttachInteractable(AInteractableActor* ActorToAttach);
 	void DropInteractable();
 	void ResetAttachedInteractable();
+	
+	void TryToUse();
+	IUsable* IsUsableInRadius();
 private:
 	AInteractableActor* AttachedInteractable = nullptr;
 	USphereComponent* TriggerVolume = nullptr;

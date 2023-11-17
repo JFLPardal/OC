@@ -14,6 +14,7 @@ enum class EInteractableType : uint8
 	DeliveryConveyor 			UMETA(DisplayName="DeliveryConveyor"),
 	Ingredient					UMETA(DisplayName="Ingredient"),
 	IngredientSpawnerCrate 		UMETA(DisplayName="IngredientSpawnerCrate"),
+	IngredientProcessor			UMETA(DisplayName="IngredientProcessor"),
 	Unspecified 				UMETA(DisplayName="Unspecified"),
 	Invalid 					UMETA(DisplayName="INVALID"),
 

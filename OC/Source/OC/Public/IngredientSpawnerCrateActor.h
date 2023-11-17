@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#include "InteractableActor.h"
+#include "StaticInteractableWithSocket.h"
 #include "EIngredient.h"
 
 #include "IngredientSpawnerCrateActor.generated.h"
@@ -16,7 +16,7 @@ class AIngredient;
  * 
  */
 UCLASS()
-class OC_API AIngredientSpawnerCrateActor : public AInteractableActor
+class OC_API AIngredientSpawnerCrateActor : public AStaticInteractableWithSocket
 {
 	GENERATED_BODY()
 	
@@ -31,13 +31,8 @@ private:
 	UTextRenderComponent* IngredientTextDisplayer;
 
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"), Category="Ingredient")
-	USceneComponent* IngredientSocket;
-
-	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"), Category="Ingredient")
 	TSubclassOf<AIngredient> IngredientActorToSpawn;
 
 	UPROPERTY(EditAnywhere, Category="Ingredient")
 	EIngredient IngredientToSpawn;
-
-	AIngredient* SpawnedIngredient;
 };

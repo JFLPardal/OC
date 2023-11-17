@@ -10,18 +10,12 @@
 FText GetTextForIngredient(EIngredient Ingredient);
 
 AIngredientSpawnerCrateActor::AIngredientSpawnerCrateActor()
-    : AInteractableActor()
-    , SpawnedIngredient(nullptr)
+    : AStaticInteractableWithSocket()
 {
     InteractableType = EInteractableType::IngredientSpawnerCrate;
-
-    IngredientSocket = CreateDefaultSubobject<USceneComponent>("IngredientSocket");
     
     IngredientTextDisplayer = CreateDefaultSubobject<UTextRenderComponent>("IngredientTextDisplayer");
     //IngredientTextDisplayer->SetText(GetTextForIngredient(IngredientToSpawn));
-    
-    FVector SocketOffset{ 0.f, 0.f, 120.f };
-    IngredientSocket->SetRelativeLocation(SocketOffset);
 }
 
 void AIngredientSpawnerCrateActor::BeginPlay()
@@ -33,33 +27,21 @@ void AIngredientSpawnerCrateActor::BeginPlay()
 
 FInteractionOutcome AIngredientSpawnerCrateActor::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
-    auto interactionOutcome = FInteractionOutcome(EInteractableInteractionOutcome::NoInteraction);
-    if(!otherInteractable)
+    FInteractionOutcome interactionOutcome = Super::AttemptInteractionWith(otherInteractable);
+    
+    if(interactionOutcome.Outcome == EInteractableInteractionOutcome::NoInteraction)
     {
-        const bool HasIngredientOnTop = SpawnedIngredient != nullptr;
-        if(!HasIngredientOnTop)
+        if(!otherInteractable)
         {
-            SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, IngredientSocket->GetComponentLocation(), GetActorRotation());
-            SpawnedIngredient->SetIngredient(IngredientToSpawn);
-        }
-        else
-        {
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
-            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
-
-            SpawnedIngredient = nullptr;
+            if(!HasInteractableInSocket())
+            {
+                AIngredient* const SpawnedIngredient = GetWorld()->SpawnActor<AIngredient>(IngredientActorToSpawn, Socket->GetComponentLocation(), GetActorRotation());
+                SpawnedIngredient->SetIngredient(IngredientToSpawn);
+                InteractableInSocket = SpawnedIngredient;
+            }
         }
     }
-    else
-    {
-        if(SpawnedIngredient && otherInteractable->GetInteractableType() ==  EInteractableType::Plate)
-        {
-            interactionOutcome.Outcome = EInteractableInteractionOutcome::InteractWithOtherInteractable;
-            interactionOutcome.NewActorToInteractWith = SpawnedIngredient;
 
-            SpawnedIngredient = nullptr;
-        }
-    }
     return interactionOutcome;
 }
 

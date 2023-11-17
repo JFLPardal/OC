@@ -6,7 +6,8 @@
 #include "GameFramework/Actor.h"
 
 #include "EInteractableType.h"
-#include "RecipeData.h"
+#include <unordered_set>
+#include <unordered_map>
 
 #include "InteractableActor.generated.h"
 
@@ -18,10 +19,17 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class EInteractableInteractionOutcome : uint8
 {
-	NoInteraction 					UMETA(DisplayName="NoInteraction"),
-	ShouldDetachFromCharacter 		UMETA(DisplayName="ShouldDetachFromCharacter"),
-	ShouldAttachToCharacter 		UMETA(DisplayName="ShouldAttachToCharacter"),
-	InteractWithOtherInteractable	UMETA(DisplayName="InteractWithOtherInteractable"),
+	NoInteraction 						UMETA(DisplayName="NoInteraction"),
+	ShouldDetachFromCharacter 			UMETA(DisplayName="ShouldDetachFromCharacter"),
+	ShouldAttachToCharacter 			UMETA(DisplayName="ShouldAttachToCharacter"),
+	InteractWithOtherInteractable		UMETA(DisplayName="InteractWithOtherInteractable"),
+	InteractWithInteractableInSocket	UMETA(DisplayName="InteractWithInteractableInSocket"),
+};
+
+enum class EInteractableState
+{
+	Enabled,
+	Disabled
 };
 
 USTRUCT(BlueprintType)
@@ -52,6 +60,12 @@ public:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable);
 
 	EInteractableType GetInteractableType() const;
+	
+	void DisableInteraction();
+	void EnableInteraction();
+	bool IsInteractionEnabled() const;
+
+	static bool CanAttachToInteractable(EInteractableType interactableToBeAttached, EInteractableType interactableToAttachTo);
 protected:
 	virtual void BeginPlay() override;
 protected:	
@@ -60,4 +74,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Interactable")
 	EInteractableType InteractableType;
+
+	EInteractableState InteractableState;
+private:
+	using InteractableTypesAttachmentMap = std::unordered_map<EInteractableType, std::unordered_set<EInteractableType>>;
+	static InteractableTypesAttachmentMap s_InteractableTypesAttachmentMap;
 };

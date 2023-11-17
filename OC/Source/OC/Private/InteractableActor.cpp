@@ -5,11 +5,16 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "RequestsSubsystem.h"
 
+using InteractableTypesAttachmentMap = std::unordered_map<EInteractableType, std::unordered_set<EInteractableType>>;
+InteractableTypesAttachmentMap AInteractableActor::s_InteractableTypesAttachmentMap
+{
+	{EInteractableType::Ingredient, std::unordered_set<EInteractableType>{EInteractableType::Plate}}
+};
 
 AInteractableActor::AInteractableActor()
-	:InteractableType(EInteractableType::Unspecified)
+	: InteractableType(EInteractableType::Unspecified)
+	, InteractableState(EInteractableState::Enabled)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
@@ -33,6 +38,38 @@ EInteractableType AInteractableActor::GetInteractableType() const
 {
 	return InteractableType;
 }
+
+void AInteractableActor::DisableInteraction()
+{
+	InteractableState = EInteractableState::Disabled;
+}
+
+void AInteractableActor::EnableInteraction()
+{
+	InteractableState = EInteractableState::Enabled;
+}
+
+bool AInteractableActor::IsInteractionEnabled() const
+{
+	return InteractableState == EInteractableState::Enabled;
+}
+
+bool AInteractableActor::CanAttachToInteractable(EInteractableType interactableToBeAttached, EInteractableType interactableToAttachTo)
+{
+	bool canAttach = false;
+
+	auto interactableToBeAttachedPossibleAttachmentsIt = s_InteractableTypesAttachmentMap.find(interactableToBeAttached);
+	if (interactableToBeAttachedPossibleAttachmentsIt != s_InteractableTypesAttachmentMap.cend())
+	{
+		auto interactableToBeAttachedPossibleAttachments = interactableToBeAttachedPossibleAttachmentsIt->second;
+		auto interactableToAttachToIt = interactableToBeAttachedPossibleAttachments.find(interactableToAttachTo);
+
+		canAttach = interactableToAttachToIt != interactableToBeAttachedPossibleAttachments.cend();
+	}
+
+	return canAttach;
+}
+
 
 void AInteractableActor::BeginPlay()
 {
