@@ -27,28 +27,31 @@ FInteractionOutcome APlate::AttemptInteractionWith(AInteractableActor* otherInte
     {
         if(otherInteractable->GetInteractableType() == EInteractableType::Ingredient)
         {
-            const auto Ingredient = Cast<AIngredient>(otherInteractable)->GetIngredient();
-            if(CurrentRecipeData.CanAddIngrendient(Ingredient))
+            if (AIngredient const* const InteractableAsIngredient = Cast<AIngredient>(otherInteractable))
             {
-                CurrentRecipeData.AddIngredient(Ingredient);
-                HeldIngredients.Add(otherInteractable);
-                if (AInteractableActor* AddedIngredient = HeldIngredients.Last())
+                const auto Ingredient = InteractableAsIngredient->GetIngredient();
+                if(CurrentRecipeData.CanAddIngrendient(Ingredient) && InteractableAsIngredient->IsReadyToUse())
                 {
-                    OnPlateCompositionChanged.ExecuteIfBound(AddedIngredient);
-
-                    if(auto MeshComponent = AddedIngredient->FindComponentByClass<UStaticMeshComponent>())
+                    CurrentRecipeData.AddIngredient(Ingredient);
+                    HeldIngredients.Add(otherInteractable);
+                    if (AInteractableActor* AddedIngredient = HeldIngredients.Last())
                     {
-                        if (auto PlateMesh = FindComponentByClass<UStaticMeshComponent>(); PlateMesh && !IngredientSocketName.IsNone())
+                        OnPlateCompositionChanged.ExecuteIfBound(AddedIngredient);
+
+                        if(auto MeshComponent = AddedIngredient->FindComponentByClass<UStaticMeshComponent>())
                         {
-                            FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
-                            AddedIngredient->GetRootComponent()->AttachToComponent(PlateMesh, attachmentRules, IngredientSocketName);
-                            AddedIngredient->DisableInteraction();
+                            if (auto PlateMesh = FindComponentByClass<UStaticMeshComponent>(); PlateMesh && !IngredientSocketName.IsNone())
+                            {
+                                FAttachmentTransformRules attachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
+                                AddedIngredient->GetRootComponent()->AttachToComponent(PlateMesh, attachmentRules, IngredientSocketName);
+                                AddedIngredient->DisableInteraction();
+                            }
+                            MeshComponent->SetGenerateOverlapEvents(false);
                         }
-                        MeshComponent->SetGenerateOverlapEvents(false);
                     }
-                }
                 
-                interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+                    interactionOutcome.Outcome = EInteractableInteractionOutcome::ShouldDetachFromCharacter;
+                }
             }
         }
         else

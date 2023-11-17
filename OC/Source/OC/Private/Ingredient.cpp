@@ -36,6 +36,11 @@ void AIngredient::Process()
     }
 }
 
+bool AIngredient::IsReadyToUse() const
+{
+    return ProcessableState == EProcessableState::ReadyToAddToRecipe;
+}
+
 FInteractionOutcome AIngredient::AttemptInteractionWith(AInteractableActor* otherInteractable)
 {
 	const bool characterIsHoldingSomething = otherInteractable != nullptr;

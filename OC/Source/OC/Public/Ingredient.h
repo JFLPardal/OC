@@ -23,6 +23,7 @@ public:
 
 	EProcessableState GetState() const override;
 	void Process() override;
+	bool IsReadyToUse() const override;
 protected:
 	virtual FInteractionOutcome AttemptInteractionWith(AInteractableActor* otherInteractable) override;
 private:

@@ -39,5 +39,11 @@ EUsageOutcome AIngredientProcessor::TryToUse()
 
 bool AIngredientProcessor::CanUse() const
 {
-	return HasInteractableInSocket() && Cast<IProcessable>(InteractableInSocket); 
+	bool IsInteractableInSocketReadyToUse = false;
+	if (IProcessable const* const InteractableInSocketIsProcessable = Cast<IProcessable>(InteractableInSocket))
+	{
+		IsInteractableInSocketReadyToUse = InteractableInSocketIsProcessable->IsReadyToUse();
+	}
+
+	return HasInteractableInSocket() && !IsInteractableInSocketReadyToUse;
 }
