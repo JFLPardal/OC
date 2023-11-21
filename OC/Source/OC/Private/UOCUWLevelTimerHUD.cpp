@@ -38,7 +38,7 @@ void UUOCUWLevelTimerHUD::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 
 		TimeLeftProgressBar->SetPercent(LerpValue);
 		bool const IsPlayingCriticalTimeRemainingAnimation = IsAnimationPlaying(CriticalTimeRemainingImageAnimation);
-		if (IsPlayingCriticalTimeRemainingAnimation && LerpValue < .01f)
+		if (IsPlayingCriticalTimeRemainingAnimation && CurrentPercentage < .01f)
 		{
 			StopAnimation(CriticalTimeRemainingImageAnimation);
 		}
@@ -56,19 +56,13 @@ void UUOCUWLevelTimerHUD::OnLevelTimerUpdated(float TimeRemainingInLevelInSecs)
 	UpdateTimeRemainingInLevelProgressBar(TimeRemainingInLevelInSecs);
 
 	bool const isTimeCritical = IsTimeCritical(TimeRemainingInLevelInSecs);
-	if (isTimeCritical)
+	if (isTimeCritical && !IsAnimationPlaying(CriticalTimeRemainingImageAnimation))
 	{
 		UpdateAnimationsForIsTimeCritical();
 	}
 }
 void UUOCUWLevelTimerHUD::UpdateTimeRemainingInLevelText(float TimeRemainingInLevelInSecs)
 {
-	bool const isTimeCritical = IsTimeCritical(TimeRemainingInLevelInSecs);
-	if (isTimeCritical)
-	{
-		TimeRemainingInLevelText->SetColorAndOpacity(CriticalTimeRemainingTextColor);
-	}
-
 	int const TimeRemainingInLevelInSecsAsInt = static_cast<int>(FMath::Clamp(FMath::Floor(TimeRemainingInLevelInSecs), 0.0f, InitialTimeRemainingInLevelInSecs));
 	TimeRemainingInLevelText->SetText(FText::AsNumber(TimeRemainingInLevelInSecsAsInt));
 }

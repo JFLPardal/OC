@@ -44,9 +44,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "TimeRemainingText")
 	float CriticalTimeThreshold = 10.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "TimeRemainingText")
-	FSlateColor CriticalTimeRemainingTextColor;
-
 	UPROPERTY(EditAnywhere)
 	float ProgressBarLerpSpeed = .2f;
 private:
