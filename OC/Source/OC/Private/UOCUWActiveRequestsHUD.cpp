@@ -13,7 +13,7 @@ bool UUOCUWActiveRequestsHUD::Initialize()
 	Super::Initialize();
 	
 	AOCGameModeBase* GameMode = Cast<AOCGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (ensureMsgf(GameMode, TEXT("Failed to cast GameMode to AOCGameModeBase")))
+	if (GameMode)
 	{
 		GameMode->OnCreatedRequestWidget.AddDynamic(this, &UUOCUWActiveRequestsHUD::OnRequestWidgetCreated);
 	}

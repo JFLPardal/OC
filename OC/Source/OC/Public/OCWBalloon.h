@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "RecipeData.h"
 #include "OCWBalloon.generated.h"
 
 /**
@@ -27,6 +28,7 @@ public:
 	void Reset();
 
 	void UpdateIngredientsWidget(AInteractableActor const* const NewPlateComposition);
+	void UpdateIngredientsWidget(FRecipeData RecipeData);
 private:
 	// there seems to be a bug with changing the visibility of a widget directly from code at runtime, this is a workaround
 	UPROPERTY(Transient, meta=(BindWidget))

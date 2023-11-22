@@ -5,6 +5,7 @@
 #include "Animation\WidgetAnimation.h"
 #include "Components\VerticalBox.h"
 #include "UIIngredientSlotWidget.h"
+#include "OCWBalloon.h"
 
 void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
 {
@@ -18,10 +19,10 @@ void UActiveRecipeWidget::SetRecipeData(FRecipeData Recipe)
         {
             ActiveRecipeWidgetDataSource dataSource{ Ingredient };		
             IngredientSlotWidget->SetDataSource(dataSource);
-            
-            if (IngredientsList)
+
+            if (IngredientsBalloon)
             {
-                IngredientsList->AddChild(IngredientSlotWidget);
+                IngredientsBalloon->UpdateIngredientsWidget(Recipe);
             }
         }
     }

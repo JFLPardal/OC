@@ -68,6 +68,28 @@ void UOCWBalloon::UpdateIngredientsWidget(AInteractableActor const* const NewPla
     ForEachIngredientContainer(UpdateIngredientsWidgetInternal);
 }
 
+void UOCWBalloon::UpdateIngredientsWidget(FRecipeData Recipe)
+{
+    int index = 0;
+    for (EIngredient Ingredient : Recipe.GetIngredients())
+    {
+        UWidget* const Child = Collection->GetChildAt(index);
+        if (Child)
+        {
+            auto IIngredientContainer = Cast<IIIngredientContainer>(Child);
+            if (IIngredientContainer->CanAssignIngredient())
+            {
+                IIngredientContainer->AssignIngredient(Ingredient);
+                ++index;
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+}
+
 void UOCWBalloon::ForEachIngredientContainer(IngredientContainerFn Function)
 {
     for (UWidget* const Child : Collection->GetAllChildren())

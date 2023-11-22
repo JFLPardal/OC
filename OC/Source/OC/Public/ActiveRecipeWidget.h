@@ -11,6 +11,7 @@
 class UUIIngredientSlotWidget;
 class UVerticalBox;
 class UWidgetAnimation;
+class UOCWBalloon;
 
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovedRequestWidgetFromHUD, FRecipeData, RecipeData);
@@ -36,9 +37,9 @@ public:
 	FRecipeData GetRecipeData() const { return RecipeData; }
 
 	void Completed();
-protected:
+protected:	
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
-	UVerticalBox* IngredientsList;
+	UOCWBalloon* IngredientsBalloon;
 
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	UWidgetAnimation* ShowAnimation;

@@ -113,10 +113,6 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
                 indexOfCompletedRecipe = ActiveRecipes.IndexOfByKey(ActiveRecipe);
                 break;
             }
-            else
-            {
-                DTOS("INVALID RECIPE");
-            }
         }
 
         // what happens if we generate a recipe before this function is done processing? Is that possible?
