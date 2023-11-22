@@ -3,7 +3,7 @@
 
 #include "OCUWIngredientBalloonContainer.h"
 
-#include "Components\TextBlock.h"
+#include "Components\Image.h"
 
 bool UOCUWIngredientBalloonContainer::CanAssignIngredient()
 {
@@ -15,8 +15,14 @@ void UOCUWIngredientBalloonContainer::AssignIngredient(EIngredient Ingredient)
 {
     ensureMsgf(IngredientHelpers::IsValid(Ingredient), TEXT("Trying to assign 'EIngredient::Invalid' to Ingredient in UOCUWIngredientBalloonContainer"));
     AssignedIngredient = Ingredient;
-    Representation->SetText(*IngredientHelpers::GetRepresentation(AssignedIngredient));
 
+    FString SimpleRecipesDataTableAssetLocation{ "/Script/Engine.Texture2D'/Game/Interactables/Ingredients/T_Ing_Carrot.T_Ing_Carrot'" };
+    auto IngredientTexture = LoadObject<UTexture2D>(NULL, *SimpleRecipesDataTableAssetLocation);
+    if (ensureMsgf(IngredientTexture, TEXT("couldn't load Ingredient texture on location %s"), *SimpleRecipesDataTableAssetLocation))
+    {
+        Representation->SetBrushFromTexture(IngredientTexture);
+        
+    }
     SetVisibility(ESlateVisibility::Visible);
 }
 

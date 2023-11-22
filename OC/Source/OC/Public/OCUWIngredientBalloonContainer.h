@@ -11,7 +11,7 @@
  * 
  */
 
-class UTextBlock;
+class UImage;
 
 UCLASS()
 class OC_API UOCUWIngredientBalloonContainer : public UUserWidget, public IIIngredientContainer
@@ -24,7 +24,7 @@ public:
 protected:
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UTextBlock> Representation;
+	TObjectPtr<UImage> Representation;
 private:
 	EIngredient AssignedIngredient = EIngredient::Invalid;
 };
