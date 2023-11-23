@@ -10,16 +10,23 @@
 UENUM(BlueprintType)
 enum class EIngredient : uint8
 {
-	Tomato 		UMETA(DisplayName="Tomato"),
-	Lettuce 	UMETA(DisplayName="Lettuce"),
-	Onion 		UMETA(DisplayName="Onion"),
-	Beans 		UMETA(DisplayName="Beans"),
-	Invalid		UMETA(DisplayName="INVALID"),
+	Aubergine 		UMETA(DisplayName="Aubergine"),
+	Lettuce 		UMETA(DisplayName="Lettuce"),
+	Pepper 			UMETA(DisplayName="Pepper"),
+	Carrot 			UMETA(DisplayName="Carrot"),
+	Brocolli		UMETA(DisplayName="Brocolli"),
+	Potato			UMETA(DisplayName="Potato"),
+
+	Invalid			UMETA(DisplayName = "INVALID"),
+	Default = Lettuce
 };
+
+class UTexture2D;
 
 namespace IngredientHelpers
 {
 	bool IsValid(EIngredient Ingredient);
 	FString ToString(EIngredient Ingredient);
-	FText* GetRepresentation(EIngredient);
+	FText* GetRepresentation(EIngredient Ingredient);
+	UTexture2D* GetImageRepresentation(EIngredient Ingredient);
 };

@@ -9,7 +9,7 @@ AIngredient::AIngredient()
     , ProcessableState(EProcessableState::Default)
 {
 	InteractableType = EInteractableType::Ingredient;
-	Ingredient = EIngredient::Tomato;
+	Ingredient = EIngredient::Default;
 }
 EIngredient AIngredient::GetIngredient() const
 {

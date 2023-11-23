@@ -10,7 +10,7 @@ void UUIIngredientSlotWidget::SetDataSource(ActiveRecipeWidgetDataSource DataSou
 }
 
 ActiveRecipeWidgetDataSource::ActiveRecipeWidgetDataSource()
-	:ActiveRecipeWidgetDataSource(EIngredient::Lettuce)
+	:ActiveRecipeWidgetDataSource(EIngredient::Default)
 {
 }
 

@@ -16,12 +16,10 @@ void UOCUWIngredientBalloonContainer::AssignIngredient(EIngredient Ingredient)
     ensureMsgf(IngredientHelpers::IsValid(Ingredient), TEXT("Trying to assign 'EIngredient::Invalid' to Ingredient in UOCUWIngredientBalloonContainer"));
     AssignedIngredient = Ingredient;
 
-    FString SimpleRecipesDataTableAssetLocation{ "/Script/Engine.Texture2D'/Game/Interactables/Ingredients/T_Ing_Carrot.T_Ing_Carrot'" };
-    auto IngredientTexture = LoadObject<UTexture2D>(NULL, *SimpleRecipesDataTableAssetLocation);
-    if (ensureMsgf(IngredientTexture, TEXT("couldn't load Ingredient texture on location %s"), *SimpleRecipesDataTableAssetLocation))
+    UTexture2D* const IngredientUITexture = IngredientHelpers::GetImageRepresentation(Ingredient);
+    if (ensureMsgf(IngredientUITexture, TEXT("couldn't load Ingredient texture for Ingredient %s. Make sure the location referenced in EIngredient.cpp is valid"), *IngredientHelpers::ToString(Ingredient)))
     {
-        Representation->SetBrushFromTexture(IngredientTexture);
-        
+        Representation->SetBrushFromTexture(IngredientUITexture);
     }
     SetVisibility(ESlateVisibility::Visible);
 }

@@ -45,7 +45,7 @@ bool FIfIngredientInteractsWithNewPlateThenPlateShouldHaveIngredients::RunTest(c
 	UWorld* World = FAutomationEditorCommonUtils::CreateNewMap();
 	APlate* const Plate = World->SpawnActor<APlate>();
 	AIngredient* const Ingredient = World->SpawnActor<AIngredient>();
-	Ingredient->SetIngredient(EIngredient::Onion);
+	Ingredient->SetIngredient(EIngredient::Default);
 	Plate->AttemptInteractionWith(Ingredient);
 
 
