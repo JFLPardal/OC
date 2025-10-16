@@ -72,10 +72,8 @@ OC/Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 OC/DerivedDataCache/*
-OC/Content/StarterContent/Textures
+OC/Content/StarterContent/
 OC/Binaries
-OC/Content/StarterContent/Audio
-OC/Content/StarterContent/HDRI
 OC/.vscode
 OC/OC.code-workspace
 OC/enc_temp_folder

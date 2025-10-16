@@ -58,7 +58,7 @@ void UOCWBalloon::UpdateIngredientsWidget(AInteractableActor const* const NewPla
                 EIngredient IngredientToAssign = IngredientActor->GetIngredient();
 
                 IIngredientContainer->AssignIngredient(IngredientToAssign);
-                UE_LOG(LogTemp, Error, TEXT("adding %s to the plate"), *IngredientHelpers::ToString(IngredientToAssign));
+                UE_LOG(LogTemp, Warning, TEXT("adding %s to the plate"), *IngredientHelpers::ToString(IngredientToAssign));
                 shouldContinueIterating = false;
             }
         }

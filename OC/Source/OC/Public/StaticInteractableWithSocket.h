@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "InteractableActor.h"
+#include "Containers/Map.h"
+#include "Templates/Function.h"
 #include "StaticInteractableWithSocket.generated.h"
-
-
 
 UENUM(BlueprintType)
 enum class EInteractableInteractionOptions : uint8
@@ -46,6 +46,6 @@ protected:
 
 	AInteractableActor* InteractableInSocket;
 
-	using InteractableTypeToInteractionExecution = TMap<EInteractableType, std::function<void(AInteractableActor* const)>>;
+	using InteractableTypeToInteractionExecution = TMap<EInteractableType, TFunction<void(AInteractableActor* const)>>;
 	InteractableTypeToInteractionExecution InteractableTypeToInteraction;
 };

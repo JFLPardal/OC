@@ -7,8 +7,6 @@
 #include "RequestsSubsystem.h"
 #include "UOCUWLevelTimerHUD.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 void AOCGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();

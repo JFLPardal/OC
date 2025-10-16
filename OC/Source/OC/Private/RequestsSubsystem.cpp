@@ -36,36 +36,47 @@ URequestsSubsystem::URequestsSubsystem()
 void URequestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {    
     Super::Initialize(Collection);
-    // subscribe to the OnPlateDelivered events
-    {
-        if(UWorld* World = GetWorld())
-        {
-            TimerManager = &(GetWorld()->GetTimerManager());
 
-            UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADeliveryConveyorActor::StaticClass(), DeliveryConveyorActors);
-            if(ensureMsgf(DeliveryConveyorActors.Num() > 0, TEXT("No DeliveryConveyorActors found in World, delivered plates will not be checked for correct recipes")))
-            {
-                for(AActor* deliveryConveyorActor : DeliveryConveyorActors )
-                {
-                    Cast<ADeliveryConveyorActor>(deliveryConveyorActor)->OnPlateDelivered.AddDynamic(this, &URequestsSubsystem::CheckIfPlateHasActiveRecipe);
-                }
-            }
-        }
+    if (UWorld* World = GetWorld(); IsValid(World))
+    {
+        TimerManager = &(World->GetTimerManager());
     }
 
     ActiveRecipes.Reserve(maxNumberOfSimultaneousActiveRecipes);
-    // set timer to call GenerateRecipe
+
+    if (ensureMsgf(InitData != nullptr, TEXT("InitData in RequestSubsystem was not initialized, requests will not be generated")))
     {
-        if (ensureMsgf(InitData != nullptr, TEXT("InitData in RequestSubsystem was not initialized, requests will not be generated")))
+        bool const bIsFirstTimeGenerating = true;
+        StartRequestGeneration(bIsFirstTimeGenerating);
+    }
+}
+
+void URequestsSubsystem::SubscribeToPlateDelivered()
+{
+    if (UWorld* World = GetWorld())
+    {
+        TimerManager = &(World->GetTimerManager());
+
+        UGameplayStatics::GetAllActorsOfClass(World, ADeliveryConveyorActor::StaticClass(), DeliveryConveyorActors);
+
+        if (ensureMsgf(DeliveryConveyorActors.Num() > 0, TEXT("No DeliveryConveyorActors found in World, delivered plates will not be checked for correct recipes")))
         {
-            bool const bIsFirstTimeGenerating = true;
-            StartRequestGeneration(bIsFirstTimeGenerating);
+            for (AActor* deliveryConveyorActor : DeliveryConveyorActors)
+            {
+                Cast<ADeliveryConveyorActor>(deliveryConveyorActor)->OnPlateDelivered.AddDynamic(this, &URequestsSubsystem::CheckIfPlateHasActiveRecipe);
+            }
         }
     }
 }
 
 void URequestsSubsystem::GenerateRecipe()
 {
+    if (!m_bAlreadySubscribedToPlateChanged)
+    {
+        SubscribeToPlateDelivered();
+        m_bAlreadySubscribedToPlateChanged = true;
+    }
+
     int numberOfActiveRecipes = ActiveRecipes.Num();
     if(numberOfActiveRecipes < maxNumberOfSimultaneousActiveRecipes)    
     {
@@ -106,7 +117,7 @@ void URequestsSubsystem::CheckIfPlateHasActiveRecipe(APlate* Plate)
             const auto ActiveRecipeIngredients = ActiveRecipe->RecipeIngredients;
 
             const bool PlateHasValidRecipe = ((PlateIngredients | ActiveRecipeIngredients) == ActiveRecipeIngredients) 
-                                           && (PlateIngredients != TStaticBitArray<16>(0));
+                                           && (PlateIngredients != TStaticBitArray<16>());
             
             if(PlateHasValidRecipe)
             {

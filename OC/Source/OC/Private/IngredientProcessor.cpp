@@ -30,7 +30,7 @@ EUsageOutcome AIngredientProcessor::TryToUse()
 			Outcome = EUsageOutcome::FullyProcessed;
 			break;
 		default:
-			UE_LOG(LogTemp, Error, TEXT("No usage outcome defined for EProcessableState %s"), ProcessableState);
+			UE_LOG(LogTemp, Error, TEXT("missing EProcessableState implementation"));
 			break;
 		}
 	}

@@ -66,7 +66,7 @@ void AOCPlayerController::TryToInteract()
             case EInteractableInteractionOutcome::ShouldAttachToCharacter:
                 break;
             default:
-                UE_LOG(LogTemp, Error, TEXT("No interaction outcome defined for type %s"), Outcome);
+                UE_LOG(LogTemp, Error, TEXT("missing implementation for EInteractableInteractionOutcome"));
                 break;
             }
         }
@@ -108,7 +108,7 @@ void AOCPlayerController::TryToInteract()
                 case EInteractableInteractionOutcome::InteractWithOtherInteractable:
                     break;
                 default:
-                    UE_LOG(LogTemp, Error, TEXT("No interaction outcome defined for type %s"), Outcome);
+                    UE_LOG(LogTemp, Error, TEXT("missing implementation for EInteractableInteractionOutcome"));
                     break;
                 }
                 break;
@@ -121,7 +121,7 @@ void AOCPlayerController::TryToInteract()
             case EInteractableInteractionOutcome::NoInteraction:
                 break;
             default:
-                UE_LOG(LogTemp, Error, TEXT("No interaction outcome defined for type %s"), Outcome);
+                UE_LOG(LogTemp, Error, TEXT("No interaction outcome defined for EInteractableInteractionOutcome"));
                 break;
             }
         }
@@ -140,16 +140,16 @@ void AOCPlayerController::TryToUse()
             switch (UsageOutcome)
             {
             case EUsageOutcome::FullyProcessed:
-                UE_LOG(LogTemp, Error, TEXT("Fully processed"));
+                UE_LOG(LogTemp, Warning, TEXT("Fully processed"));
                 break;
             case EUsageOutcome::NotFullyProcessed:
-                UE_LOG(LogTemp, Error, TEXT("Not fully processed"));
+                UE_LOG(LogTemp, Warning, TEXT("Not fully processed"));
                 break;
             case EUsageOutcome::FailedToUse:
-                UE_LOG(LogTemp, Error, TEXT("Failed to use"));
+                UE_LOG(LogTemp, Warning, TEXT("Failed to use"));
                 break;
             default:
-                UE_LOG(LogTemp, Error, TEXT("No usage outcome defined for type %s"), UsageOutcome);
+                UE_LOG(LogTemp, Warning, TEXT("No usage outcome defined for EUsageOutcome"));
                 break;
             }
         }

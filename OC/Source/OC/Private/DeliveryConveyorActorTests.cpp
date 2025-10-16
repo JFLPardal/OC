@@ -10,7 +10,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-EAutomationTestFlags::Type const defaultFlags = static_cast<EAutomationTestFlags::Type>(EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter);
+const EAutomationTestFlags defaultFlags = static_cast<EAutomationTestFlags>(EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter);
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FIfInteractingWithNullptrThenInteractionOutcomeShouldBeNoInteraction, "OC.Actors.DeliveryConveyorActor.IfInteractingWithNullptrThenInteractionOutcomeShouldBeNoInteraction", defaultFlags)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FIfPlateClearedThenPlateShouldHaveNoIngredients, "OC.Actors.Plate.IfPlateClearedThenPlateShouldHaveNoIngredients", defaultFlags)

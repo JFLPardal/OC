@@ -59,12 +59,16 @@ private:
 
 	TArray<AActor*> DeliveryConveyorActors;
 
-
 	URequestSubsystemPOD* InitData;
 
 	FTimerHandle GenerateRecipeTimer;
 	FTimerManager* TimerManager;
+
+	bool m_bAlreadySubscribedToPlateChanged = false;
 private:
+	UFUNCTION()
+	void SubscribeToPlateDelivered();
+
 	void SetInitData();
 	void CreateRecipesDataTable();
 

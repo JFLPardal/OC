@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "RecipeData.h"
+#include "Templates/Function.h"
 #include "OCWBalloon.generated.h"
 
 /**
@@ -38,6 +39,6 @@ private:
 	TObjectPtr<UUniformGridPanel> Collection;
 private:
 	void SetCanvasVisibility(ESlateVisibility VisibilityToSet);
-	using IngredientContainerFn = std::function<bool/*should continue iteration*/(IIIngredientContainer* const)>;
+	using IngredientContainerFn = TFunction<bool/*should continue iteration*/(IIIngredientContainer* const)>;
 	void ForEachIngredientContainer(IngredientContainerFn Function);
 };
